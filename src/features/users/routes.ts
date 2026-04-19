@@ -10,5 +10,6 @@ export function usersRoutes(env: Env) {
 
   return {
     "GET /users": (req: Request) => controller.getAll(req),
+    "POST /users": (req: Request) => controller.create(req),
   };
 }

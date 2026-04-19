@@ -61,12 +61,7 @@ export class UserRepository implements IUserRepository {
     async create(input: UserCreateInput): Promise<User> {
         const rows = await this.orm
             .insert(users)
-            .values({
-                name: input.name ?? null,
-                email: input.email,
-                password: input.password,
-                role: input.role ?? "dev",
-            })
+            .values(input)
             .returning();
 
         if (rows.length === 0) {

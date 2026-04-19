@@ -1,4 +1,6 @@
 import { apiResponse, handleError } from "../../shared/response/api-response";
+import { validateBody } from "../../shared/validation/validation";
+import { userCreateSchema } from "./schema";
 import { IUserService } from "./service";
 
 export class UserController {
@@ -7,14 +9,25 @@ export class UserController {
   async getAll(_req: Request): Promise<Response> {
     try {
       const users = await this.service.getAll();
-      const response = apiResponse(users, "users retrieved successfully");
-
-      return Response.json(response.jsonBody ?? null, { status: response.status });
+      return apiResponse(users, "users retrieved successfully");
     } catch (error) {
-      const response = handleError(error);
-      console.log("Error in getAll:", error);
+      return handleError(error);
+    }
+  }
 
-      return Response.json(response.jsonBody ?? null, { status: response.status });
+  async create(_req: Request): Promise<Response> {
+    try {
+      const input = await _req.json();
+      const validation = validateBody(input, userCreateSchema);
+
+      if (!validation.success) {
+        return apiResponse(validation.errors, "Validation failed");
+      }
+
+      const created = await this.service.create(validation.data);
+      return apiResponse(created, "User created successfully");
+    } catch (error) {
+      return handleError(error);
     }
   }
 }
