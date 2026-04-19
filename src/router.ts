@@ -9,7 +9,7 @@ export async function router(req: Request, env: Env): Promise<Response> {
   const url = new URL(req.url);
 
   const routes: Record<string, RouteHandler> = {
-    ...usersRoutes,
+    ...usersRoutes(env),
     //...petsRoutes,
   };
 

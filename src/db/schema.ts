@@ -4,16 +4,16 @@ import { create } from "node:domain";
 
 export const users = sqliteTable("users", {
   id: integer("id").primaryKey(),
-  name: text("name"),
+  name: text("name").notNull(),
   email: text("email").notNull(),
-  passwordHash: text("password_hash").notNull(),
-  role: text("role").notNull().default("admin"),
-  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  password: text("password").notNull(),
+  role: text("role", { enum: ["admin", "dev"] }).notNull(),
+  createdAt: text("created_at").default(sql`CURRENT_TIMESTAMP`)
 });
 
 export const animals = sqliteTable("animals", {
   id: integer("id").primaryKey(),
-  name: text("name"),
+  name: text("name").notNull(),
   imageUrl : text("image_url").notNull(),
   age : text("age").notNull(),
   gender : text("gender").notNull(),

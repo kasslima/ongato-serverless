@@ -9,7 +9,6 @@ export function usersRoutes(env: Env) {
   const controller = new UserController(service);
 
   return {
-    "POST /register": controller.register,
-    "POST /login": controller.login,
+    "GET /users": (req: Request) => controller.getAll(req),
   };
 }
