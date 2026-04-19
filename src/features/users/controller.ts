@@ -7,10 +7,12 @@ export class UserController {
   async getAll(_req: Request): Promise<Response> {
     try {
       const users = await this.service.getAll();
+      const response = apiResponse(users, "users retrieved successfully");
 
-      return apiResponse(users, "users retrieved successfully");
+      return Response.json(response.jsonBody ?? null, { status: response.status });
     } catch (error) {
       const response = handleError(error);
+      console.log("Error in getAll:", error);
 
       return Response.json(response.jsonBody ?? null, { status: response.status });
     }

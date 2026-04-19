@@ -5,6 +5,11 @@ export interface ApiResponse<T> {
     message: string
 }
 
+type HttpResponseInit = {
+    status: number
+    jsonBody?: unknown
+}
+
 export function apiResponse<T>(data: T, message: string): HttpResponseInit {
     return {
         status: 200,
