@@ -1,15 +1,21 @@
+import { authsRoutes } from "./features/auth/routes";
 import { usersRoutes } from "./features/users/routes";
 import { Env } from "./shared/type";
 
 //import { petsRoutes } from "./features/pets/routes";
 
-type RouteHandler = (req: Request, env: Env) => Promise<Response>;
+type RouteHandler = (
+  req: Request,
+  env: Env,
+  ctx: ExecutionContext
+) => Promise<Response> | Response;
 
-export async function router(req: Request, env: Env): Promise<Response> {
+export async function router( req: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
   const url = new URL(req.url);
 
   const routes: Record<string, RouteHandler> = {
     ...usersRoutes(env),
+    ...authsRoutes(env),
     //...petsRoutes,
   };
 
@@ -21,5 +27,5 @@ export async function router(req: Request, env: Env): Promise<Response> {
     return new Response("Not Found", { status: 404 });
   }
 
-  return handler(req, env);
+  return handler(req, env, ctx);
 }
