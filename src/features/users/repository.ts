@@ -10,6 +10,7 @@ export interface IUserRepository {
     findById(id: number): Promise<User | null>;
     findByEmail(email: string): Promise<User | null>;
     create(input: UserCreateInput): Promise<User>;
+    delete(id: number): Promise<void>;
 }
 
 export class UserRepository implements IUserRepository {
@@ -69,5 +70,11 @@ export class UserRepository implements IUserRepository {
         }
 
         return rows[0]
+    }
+
+    async delete(id: number): Promise<void> {
+        await this.orm
+            .delete(users)
+            .where(eq(users.id, id));
     }
 }

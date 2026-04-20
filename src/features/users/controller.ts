@@ -1,10 +1,11 @@
 import { apiResponse, handleError } from "../../shared/response/api-response";
-import { validateBody } from "../../shared/validation/validation";
+import { validateBody, validateParams } from "../../shared/validation/validation";
 import { userCreateSchema } from "./schema";
 import { IUserService } from "./service";
+import { idParamSchema } from "../../shared/validation/schema";
 
 export class UserController {
-    constructor(private readonly service: IUserService) {}
+  constructor(private readonly service: IUserService) { }
 
   async getAll(_req: Request): Promise<Response> {
     try {
@@ -26,6 +27,22 @@ export class UserController {
 
       const created = await this.service.create(validation.data);
       return apiResponse(created, "User created successfully");
+    } catch (error) {
+      return handleError(error);
+    }
+  }
+
+  async delete(_req: Request, params: Record<string, string>): Promise<Response> {
+    try {
+      const input = { id: params.id ?? "" };
+      const validation = validateParams(input, idParamSchema);
+
+      if (!validation.success) {
+        return apiResponse(validation.errors, "Validation failed");
+      }
+
+      await this.service.delete(validation.data.id);
+      return apiResponse(null, "User deleted successfully");
     } catch (error) {
       return handleError(error);
     }
