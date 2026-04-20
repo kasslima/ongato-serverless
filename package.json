@@ -19,6 +19,8 @@
     "wrangler": "^4.83.0"
   },
   "dependencies": {
+    "@asteasolutions/zod-to-openapi": "^8.5.0",
+    "@scalar/api-reference": "^1.52.3",
     "bcryptjs": "^3.0.3",
     "drizzle-orm": "^0.45.2",
     "jose": "^6.2.2",
