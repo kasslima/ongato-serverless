@@ -1,4 +1,4 @@
-import { hashPassword } from "../../shared/password-helper/bcrypt";
+import { hashPassword } from "../../shared/crypto/password";
 import { IUserRepository } from "./repository";
 import { User, UserCreateInput } from "./schema";
 
@@ -8,15 +8,18 @@ export interface IUserService {
 }
 
 export class UserService implements IUserService {
-    constructor(private readonly repo: IUserRepository) {}
+  constructor(private readonly repo: IUserRepository) { }
 
   async getAll(): Promise<User[]> {
     return await this.repo.getAll();
   }
 
   async create(input: UserCreateInput): Promise<User> {
-    input.password = hashPassword(input.password);
+    const hashedPassword = hashPassword(input.password);
 
-    return await this.repo.create(input);
+    return this.repo.create({
+      ...input,
+      password: hashedPassword,
+    });
   }
 }
