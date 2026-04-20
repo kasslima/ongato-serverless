@@ -16,7 +16,7 @@ export class AuthController {
       }
 
       const created = await this.service.login(validation.data);
-      return apiResponse(created, "Auth created successfully");
+      return apiResponse(created, "Auth successfully");
     } catch (error) {
       return handleError(error);
     }
