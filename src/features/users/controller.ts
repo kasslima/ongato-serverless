@@ -3,7 +3,6 @@ import { validateBody, validateParams } from "../../shared/validation/validation
 import { userCreateSchema } from "./schema";
 import { IUserService } from "./service";
 import { idParamSchema } from "../../shared/validation/schema";
-import { no } from "zod/locales";
 
 export class UserController {
   constructor(private readonly service: IUserService) { }
