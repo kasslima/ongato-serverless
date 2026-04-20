@@ -5,16 +5,22 @@ type AuthenticatedHandler = (
   req: Request,
   env: any,
   ctx: any,
-  user: TokenPayload
+  user: TokenPayload,
+  params: Record<string, string>
 ) => Promise<Response> | Response;
 
 export function withAuth(options?: { roles?: string[] }) {
   return (handler: AuthenticatedHandler) => {
-    return async (req: Request, env: any, ctx: any) => {
+    return async (
+      req: Request,
+      env: any,
+      ctx: any,
+      params: Record<string, string>
+    ) => {
       const authHeader = req.headers.get("Authorization");
 
       if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        return new Response("Não autorizado", { status: 401 });
+        return new Response("Nao autorizado", { status: 401 });
       }
 
       const token = authHeader.split(" ")[1];
@@ -26,9 +32,9 @@ export function withAuth(options?: { roles?: string[] }) {
           return new Response("Proibido", { status: 403 });
         }
 
-        return handler(req, env, ctx, user);
+        return handler(req, env, ctx, user, params);
       } catch {
-        return new Response("Token inválido", { status: 401 });
+        return new Response("Token invalido", { status: 401 });
       }
     };
   };
