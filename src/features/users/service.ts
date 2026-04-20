@@ -1,3 +1,4 @@
+import { hashPassword } from "../../shared/password-helper/bcrypt";
 import { IUserRepository } from "./repository";
 import { User, UserCreateInput } from "./schema";
 
@@ -14,6 +15,8 @@ export class UserService implements IUserService {
   }
 
   async create(input: UserCreateInput): Promise<User> {
+    input.password = hashPassword(input.password);
+
     return await this.repo.create(input);
   }
 }
