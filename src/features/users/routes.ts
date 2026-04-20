@@ -17,6 +17,10 @@ export function usersRoutes(env: Env) {
     "POST /users": withAuth({ roles: ["dev"] })(
       (req, _env, _ctx, _user) => controller.create(req)
     ),
+
+    "DELETE /users/:id": withAuth({ roles: ["dev"] })(
+      (req, _env, _ctx, _user, params) => controller.delete(req, params)
+    ),
   };
 }
 

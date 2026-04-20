@@ -5,6 +5,7 @@ import { User, UserCreateInput } from "./schema";
 export interface IUserService {
   getAll(): Promise<User[]>;
   create(input: UserCreateInput): Promise<User>;
+  delete(id: number): Promise<void>;
 }
 
 export class UserService implements IUserService {
@@ -21,5 +22,9 @@ export class UserService implements IUserService {
       ...input,
       password: hashedPassword,
     });
+  }
+
+  async delete(id: number): Promise<void> {
+    await this.repo.delete(id);
   }
 }
