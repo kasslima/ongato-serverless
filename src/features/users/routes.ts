@@ -7,6 +7,7 @@ import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
 import { userSchema, userCreateSchema } from "./schema";
 import { z } from "zod";
 import { validationErrorSchema, errorResponseSchema } from "../../shared/errors/schema";
+import { idParamSchema } from "../../shared/validation/schema";
 
 export function registerUsersOpenApi(registry: OpenAPIRegistry) {
   registry.registerPath({
@@ -106,25 +107,12 @@ export function registerUsersOpenApi(registry: OpenAPIRegistry) {
     description: 'Delete a user by ID',
     summary: 'Delete user',
     security: [{ bearerAuth: [] }],
-    parameters: [
-      {
-        name: 'id',
-        in: 'path',
-        required: true,
-        schema: { type: 'number' },
-      },
-    ],
+    request: {
+      params: idParamSchema
+    },
     responses: {
-      200: {
+      203: {
         description: 'User deleted',
-        content: {
-          'application/json': {
-            schema: z.object({
-              result: z.null(),
-              message: z.string(),
-            }),
-          },
-        },
       },
       400: {
         description: 'Validation failed',
@@ -161,7 +149,7 @@ export function usersRoutes(env: Env) {
 
   return {
     "GET /users": withAuth({ roles: ["admin"] })(
-    (req, _env, _ctx, _user) => controller.getAll(req)
+      (req, _env, _ctx, _user) => controller.getAll(req)
     ),
 
     "POST /users": withAuth({ roles: ["dev"] })(

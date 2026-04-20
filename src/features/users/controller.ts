@@ -1,8 +1,9 @@
-import { apiResponse, handleError } from "../../shared/response/api-response";
+import { apiResponse, handleError, noContentResponse } from "../../shared/response/api-response";
 import { validateBody, validateParams } from "../../shared/validation/validation";
 import { userCreateSchema } from "./schema";
 import { IUserService } from "./service";
 import { idParamSchema } from "../../shared/validation/schema";
+import { no } from "zod/locales";
 
 export class UserController {
   constructor(private readonly service: IUserService) { }
@@ -42,7 +43,7 @@ export class UserController {
       }
 
       await this.service.delete(validation.data.id);
-      return apiResponse(null, "User deleted successfully");
+      return noContentResponse();
     } catch (error) {
       return handleError(error);
     }
