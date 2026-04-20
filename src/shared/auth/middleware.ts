@@ -20,7 +20,7 @@ export function withAuth(options?: { roles?: string[] }) {
       const authHeader = req.headers.get("Authorization");
 
       if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        return new Response("Nao autorizado", { status: 401 });
+        return new Response("Not authorized", { status: 401 });
       }
 
       const token = authHeader.split(" ")[1];
@@ -29,12 +29,12 @@ export function withAuth(options?: { roles?: string[] }) {
         const user = await verifyToken(token);
 
         if (options?.roles && !options.roles.includes(user.role)) {
-          return new Response("Proibido", { status: 403 });
+          return new Response("Permission denied", { status: 403 });
         }
 
         return handler(req, env, ctx, user, params);
       } catch {
-        return new Response("Token invalido", { status: 401 });
+        return new Response("Invalid token", { status: 401 });
       }
     };
   };
