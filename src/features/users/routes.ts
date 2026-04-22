@@ -4,7 +4,7 @@ import { UserRepository } from "./repository";
 import { Env } from "../../shared/type";
 import { withAuth } from "../../shared/auth/middleware";
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
-import { userSchema, userCreateSchema } from "./schema";
+import { userSchema, userCreateSchema, userResponseSchema } from "./schema";
 import { z } from "zod";
 import { validationErrorSchema, errorResponseSchema } from "../../shared/errors/schema";
 import { idParamSchema } from "../../shared/validation/schema";
@@ -22,7 +22,7 @@ export function registerUsersOpenApi(registry: OpenAPIRegistry) {
         content: {
           'application/json': {
             schema: z.object({
-              result: z.array(userSchema),
+              result: z.array(userResponseSchema),
               message: z.string(),
             }),
           },
@@ -68,7 +68,7 @@ export function registerUsersOpenApi(registry: OpenAPIRegistry) {
         content: {
           'application/json': {
             schema: z.object({
-              result: userSchema,
+              result: userResponseSchema,
               message: z.string(),
             }),
           },
@@ -148,7 +148,7 @@ export function usersRoutes(env: Env) {
   const controller = new UserController(service);
 
   return {
-    "GET /users": withAuth({ roles: ["admin"] })(
+    "GET /users": withAuth({ roles: ["admin", "dev"] })(
       (req, _env, _ctx, _user) => controller.getAll(req)
     ),
 
