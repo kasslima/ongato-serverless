@@ -91,7 +91,7 @@ export class UserRepository implements IUserRepository {
         return rows[0]
     }
 
-    async update(id: number, input: Omit<User, 'id'>): Promise<UserResponse> {
+    async update(id: number, input: UserUpdateInput ): Promise<UserResponse> {
         const rows = await this.orm
             .update(users)
             .set(input)
