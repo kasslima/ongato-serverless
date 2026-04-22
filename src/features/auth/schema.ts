@@ -8,10 +8,10 @@ export const authSchema = z.object({
 });
 export type Auth = z.infer<typeof authSchema>;
 
-export const TokenPayloadSchema = z.object({
+export const JwtSchema = z.object({
   id: z.number(),
   email: z.string().email(),
   role: userSchema.shape.role,
 });
 
-export type TokenPayload = z.infer<typeof TokenPayloadSchema>;
+export type Jwt = z.infer<typeof JwtSchema>;

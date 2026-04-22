@@ -2,7 +2,7 @@ import { generateToken } from "../../shared/auth/jwt";
 import { passwordValid } from "../../shared/crypto/password";
 import { UnauthorizedError } from "../../shared/errors/http-error";
 import { IUserRepository } from "../users/repository";
-import { Auth, TokenPayload } from "./schema";
+import { Auth, Jwt } from "./schema";
 
 export interface IAuthService {
   login(input: Auth): Promise<{ token: string }>;
@@ -25,7 +25,7 @@ export class AuthService implements IAuthService {
       id: user.id,
       email: user.email,
       role: user.role
-    } satisfies TokenPayload;
+    } satisfies Jwt;
 
     const token = await generateToken(payload);
     return { token };
