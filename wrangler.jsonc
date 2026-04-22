@@ -14,7 +14,8 @@
 		{
 		"binding": "DB",
 		"database_name": "ongato-db",
-		"database_id": "bc0d876f-c6dd-4b8d-8bd2-aa15b3a65341"
+		"database_id": "bc0d876f-c6dd-4b8d-8bd2-aa15b3a65341",
+		"migrations_dir": "drizzle"
 		}
 	]
 }
