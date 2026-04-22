@@ -19,9 +19,9 @@ export type UserCreateInput = z.infer<typeof userCreateSchema>;
 
 
 export const userUpdateSchema = userCreateSchema
-  .omit({
+  .pick({
+    email: true,
     password: true,
-    role: true
   })
   .partial()
   .refine(data => Object.keys(data).length > 0, {

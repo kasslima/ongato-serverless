@@ -1,6 +1,6 @@
-import { apiResponse, handleError, noContentResponse } from "../../shared/response/api-response";
+import { apiResponse, createdResponse, handleError, noContentResponse } from "../../shared/response/api-response";
 import { validateBody, validateParams } from "../../shared/validation/validation";
-import { userCreateSchema } from "./schema";
+import { User, userCreateSchema, userUpdateSchema } from "./schema";
 import { IUserService } from "./service";
 import { idParamSchema } from "../../shared/validation/schema";
 
@@ -22,7 +22,7 @@ export class UserController {
       const validation = validateBody(input, userCreateSchema);
 
       if (!validation.success) {
-        return apiResponse(validation.errors, "Validation failed");
+        return createdResponse(validation.errors, "Validation failed");
       }
 
       const created = await this.service.create(validation.data);
@@ -43,6 +43,29 @@ export class UserController {
 
       await this.service.delete(validation.data.id);
       return noContentResponse();
+    } catch (error) {
+      return handleError(error);
+    }
+  }
+
+  async update(_req: Request, params: Record<string, string>, user: User): Promise<Response> {
+    try {
+      const inputBody = await _req.json();
+      const validationBody = validateBody(inputBody, userUpdateSchema);
+
+      if (!validationBody.success) {
+        return apiResponse(validationBody.errors, "Validation failed");
+      }
+
+      const inputParams = { id: params.id ?? "" };
+      const validationParams = validateParams(inputParams, idParamSchema);
+
+      if (!validationParams.success) {
+        return apiResponse(validationParams.errors, "Validation failed");
+      }
+
+      const created = await this.service.update(validationParams.data.id ,validationBody.data);
+      return apiResponse(created, "User updated successfully");
     } catch (error) {
       return handleError(error);
     }

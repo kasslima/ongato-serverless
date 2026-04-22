@@ -4,7 +4,7 @@ import { UserRepository } from "./repository";
 import { Env } from "../../shared/type";
 import { withAuth } from "../../shared/auth/middleware";
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
-import { userSchema, userCreateSchema, userResponseSchema } from "./schema";
+import { userSchema, userCreateSchema, userResponseSchema, userUpdateSchema } from "./schema";
 import { z } from "zod";
 import { validationErrorSchema, errorResponseSchema } from "../../shared/errors/schema";
 import { idParamSchema } from "../../shared/validation/schema";
@@ -140,6 +140,53 @@ export function registerUsersOpenApi(registry: OpenAPIRegistry) {
       },
     },
   });
+
+  registry.registerPath({
+    method: 'patch',
+    path: '/users/{id}',
+    description: 'Delete a user by ID',
+    summary: 'Delete user',
+    security: [{ bearerAuth: [] }],
+    request: {
+      params: idParamSchema,
+      body: {
+        content: {
+          'application/json': {
+            schema: userUpdateSchema,
+          },
+        },
+      },
+    },
+    responses: {
+      200: {
+        description: 'User deleted',
+      },
+      400: {
+        description: 'Validation failed',
+        content: {
+          'application/json': {
+            schema: validationErrorSchema,
+          },
+        },
+      },
+      401: {
+        description: 'Unauthorized',
+        content: {
+          'application/json': {
+            schema: errorResponseSchema,
+          },
+        },
+      },
+      403: {
+        description: 'Forbidden',
+        content: {
+          'application/json': {
+            schema: errorResponseSchema,
+          },
+        },
+      },
+    },
+  });
 }
 
 export function usersRoutes(env: Env) {
@@ -158,6 +205,10 @@ export function usersRoutes(env: Env) {
 
     "DELETE /users/:id": withAuth({ roles: ["dev"] })(
       (req, _env, _ctx, _user, params) => controller.delete(req, params)
+    ),
+
+    "PATCH /users/me": withAuth({ roles: ["dev"] })(
+      (req, _env, _ctx, user, params) => controller.update(req, params, user)
     ),
   };
 }
