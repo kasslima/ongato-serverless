@@ -3,6 +3,7 @@ import { validateBody, validateParams } from "../../shared/validation/validation
 import { User, userCreateSchema, userUpdateSchema } from "./schema";
 import { IUserService } from "./service";
 import { idParamSchema } from "../../shared/validation/schema";
+import { Jwt } from "../auth/schema";
 
 export class UserController {
   constructor(private readonly service: IUserService) { }
@@ -48,7 +49,7 @@ export class UserController {
     }
   }
 
-  async update(_req: Request, params: Record<string, string>, user: User): Promise<Response> {
+  async update(_req: Request, user: Jwt): Promise<Response> {
     try {
       const inputBody = await _req.json();
       const validationBody = validateBody(inputBody, userUpdateSchema);
@@ -57,14 +58,7 @@ export class UserController {
         return apiResponse(validationBody.errors, "Validation failed");
       }
 
-      const inputParams = { id: params.id ?? "" };
-      const validationParams = validateParams(inputParams, idParamSchema);
-
-      if (!validationParams.success) {
-        return apiResponse(validationParams.errors, "Validation failed");
-      }
-
-      const created = await this.service.update(validationParams.data.id ,validationBody.data);
+      const created = await this.service.update(user.id ,validationBody.data);
       return apiResponse(created, "User updated successfully");
     } catch (error) {
       return handleError(error);

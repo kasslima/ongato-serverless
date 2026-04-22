@@ -138,17 +138,24 @@ export function registerUsersOpenApi(registry: OpenAPIRegistry) {
           },
         },
       },
+      404: {
+        description: 'Not Found',
+        content: {
+          'application/json': {
+            schema: errorResponseSchema,
+          },
+        },
+      },
     },
   });
 
   registry.registerPath({
     method: 'patch',
-    path: '/users/{id}',
-    description: 'Delete a user by ID',
-    summary: 'Delete user',
+    path: '/users/me',
+    description: 'Update your user',
+    summary: 'Update user',
     security: [{ bearerAuth: [] }],
     request: {
-      params: idParamSchema,
       body: {
         content: {
           'application/json': {
@@ -159,7 +166,15 @@ export function registerUsersOpenApi(registry: OpenAPIRegistry) {
     },
     responses: {
       200: {
-        description: 'User deleted',
+        description: 'User updated',
+        content: {
+          'application/json': {
+            schema: z.object({
+              result: userResponseSchema,
+              message: z.string(),
+            }),
+          },
+        },
       },
       400: {
         description: 'Validation failed',
@@ -179,6 +194,14 @@ export function registerUsersOpenApi(registry: OpenAPIRegistry) {
       },
       403: {
         description: 'Forbidden',
+        content: {
+          'application/json': {
+            schema: errorResponseSchema,
+          },
+        },
+      },
+      404: {
+        description: 'Not Found',
         content: {
           'application/json': {
             schema: errorResponseSchema,
@@ -208,7 +231,7 @@ export function usersRoutes(env: Env) {
     ),
 
     "PATCH /users/me": withAuth({ roles: ["dev"] })(
-      (req, _env, _ctx, user, params) => controller.update(req, params, user)
+      (req, _env, _ctx, user) => controller.update(req, user)
     ),
   };
 }
