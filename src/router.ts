@@ -2,6 +2,7 @@ import { authsRoutes } from "./features/auth/routes";
 import { usersRoutes } from "./features/users/routes";
 import { docsRoutes } from "./features/docs/routes";
 import { Env } from "./shared/type";
+import { bannersRoutes } from "./features/banners/routes";
 
 //import { petsRoutes } from "./features/pets/routes";
 
@@ -55,8 +56,9 @@ export async function router( req: Request, env: Env, ctx: ExecutionContext): Pr
   const routes: Record<string, RouteHandler> = {
     ...usersRoutes(env),
     ...authsRoutes(env),
+    ...bannersRoutes(env),
     ...docsRoutes(),
-    //...petsRoutes,
+
   };
 
   let handler: RouteHandler | undefined;
