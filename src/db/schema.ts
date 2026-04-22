@@ -23,3 +23,20 @@ export const animals = sqliteTable("animals", {
   createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
   updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });
+
+export const banners = sqliteTable("banners", {
+  id: integer("id").primaryKey(),
+  title : text("title").notNull(),
+  imageUrl : text("image_url").notNull(),
+  description : text("description"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
+export const events = sqliteTable("events", {
+  id: integer("id").primaryKey(),
+  title : text("title").notNull(),
+  imageUrl : text("image_url").notNull(),
+  text : text("text"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
