@@ -65,7 +65,7 @@ export class BannerController {
         return apiResponse(validationParams.errors, "Validation failed");
       }
 
-      const created = await this.service.update(validationParams.data.id ,validationBody.data);
+      const created = await this.service.update(validationParams.data.id, validationBody.data);
       return apiResponse(created, "Banner updated successfully");
     } catch (error) {
       return handleError(error);
