@@ -2,7 +2,7 @@ import { SignJWT, jwtVerify } from "jose";
 import { Jwt, jwtSchema } from "../../features/auth/schema";
 import { promise } from "zod";
 
-const secret = new TextEncoder().encode("SUA_SECRET_AQUI");
+const secret = new TextEncoder().encode("your-secret-key");
 
 export async function generateToken(payload: any) {
   return new SignJWT(payload)
