@@ -2,6 +2,7 @@ import { IBannerRepository } from "./repository";
 import { Banner, BannerCreateApiInput, BannerUpdateApiInput } from "./schema";
 import { IImageUploadRepository } from "../../shared/storage/image-upload.repository";
 
+
 export interface IBannerService {
   getAll(): Promise<Banner[]>;
   getById(id: number): Promise<Banner | null>;
@@ -37,6 +38,7 @@ export class BannerService implements IBannerService {
   }
 
   async update(id: number, input: BannerUpdateApiInput, imageBuffer?: ArrayBuffer, fileName?: string, contentType?: string): Promise<Banner> {
+
     const banner = await this.repo.findById(id);
 
     if (!banner) {

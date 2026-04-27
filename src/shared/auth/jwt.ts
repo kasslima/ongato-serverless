@@ -1,8 +1,8 @@
 import { SignJWT, jwtVerify } from "jose";
-import { TokenPayload, TokenPayloadSchema } from "../../features/auth/schema";
+import { Jwt, jwtSchema } from "../../features/auth/schema";
 import { promise } from "zod";
 
-const secret = new TextEncoder().encode("SUA_SECRET_AQUI");
+const secret = new TextEncoder().encode("your-secret-key");
 
 export async function generateToken(payload: any) {
   return new SignJWT(payload)
@@ -11,13 +11,13 @@ export async function generateToken(payload: any) {
     .sign(secret);
 }
 
-export async function verifyToken(token: string): Promise<TokenPayload> {
+export async function verifyToken(token: string): Promise<Jwt> {
   const { payload } = await jwtVerify(token, secret);
 
-  const parsed = TokenPayloadSchema.safeParse(payload);
+  const parsed = jwtSchema.safeParse(payload);
 
   if (!parsed.success) {
-    throw new Error("Payload inválido");
+    throw new Error("Invalid token");
   }
 
   return parsed.data;
