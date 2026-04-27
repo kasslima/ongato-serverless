@@ -1,7 +1,7 @@
 import { OpenAPIRegistry, OpenApiGeneratorV3, extendZodWithOpenApi } from '@asteasolutions/zod-to-openapi';
 import { z } from 'zod';
 import { registerAuthOpenApi } from './features/auth/routes';
-import { registerUsersOpenApi } from './features/users/routes';
+import { registerUsersOpenApi } from './features/user/routes';
 
 // Extend Zod with OpenAPI
 extendZodWithOpenApi(z);

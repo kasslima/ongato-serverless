@@ -16,6 +16,10 @@ export const bannerCreateSchema = bannerSchema.omit({
 });
 export type BannerCreateInput = z.infer<typeof bannerCreateSchema>;
 
+export const bannerCreateApiSchema = bannerCreateSchema.omit({
+  imageUrl: true
+});
+export type BannerCreateApiInput = z.infer<typeof bannerCreateApiSchema>;
 
 export const bannerUpdateSchema = bannerSchema
   .omit({
@@ -27,3 +31,6 @@ export const bannerUpdateSchema = bannerSchema
     message: "Pelo menos um campo deve ser enviado para atualização"
   });
 export type BannerUpdateInput = z.infer<typeof bannerUpdateSchema>;
+
+export const bannerUpdateApiSchema = bannerUpdateSchema;
+export type BannerUpdateApiInput = z.infer<typeof bannerUpdateApiSchema>;

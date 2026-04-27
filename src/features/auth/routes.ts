@@ -1,6 +1,6 @@
 import { AuthController } from "./controller";
 import { AuthService } from "./service";
-import { UserRepository } from "../users/repository";
+import { UserRepository } from "../user/repository";
 import { Env } from "../../shared/type";
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
 import { authSchema } from "./schema";

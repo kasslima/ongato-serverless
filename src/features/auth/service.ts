@@ -1,7 +1,7 @@
 import { generateToken } from "../../shared/auth/jwt";
 import { passwordValid } from "../../shared/crypto/password";
 import { UnauthorizedError } from "../../shared/errors/http-error";
-import { IUserRepository } from "../users/repository";
+import { IUserRepository } from "../user/repository";
 import { Auth, Jwt } from "./schema";
 
 export interface IAuthService {

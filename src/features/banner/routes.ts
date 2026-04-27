@@ -4,10 +4,11 @@ import { BannerRepository } from "./repository";
 import { Env } from "../../shared/type";
 import { withAuth } from "../../shared/auth/middleware";
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
-import { bannerSchema, bannerCreateSchema, bannerUpdateSchema } from "./schema";
+import { bannerSchema, bannerCreateApiSchema, bannerUpdateApiSchema } from "./schema";
 import { z } from "zod";
 import { validationErrorSchema, errorResponseSchema } from "../../shared/errors/schema";
 import { idParamSchema } from "../../shared/validation/schema";
+import { MockImageUploadRepository } from "../../shared/storage/image-upload.repository";
 
 export function registerBannersOpenApi(registry: OpenAPIRegistry) {
   registry.registerPath({
@@ -56,8 +57,8 @@ export function registerBannersOpenApi(registry: OpenAPIRegistry) {
     request: {
       body: {
         content: {
-          'application/json': {
-            schema: bannerCreateSchema,
+          'multipart/form-data': {
+            schema: bannerCreateApiSchema,
           },
         },
       },
@@ -151,15 +152,15 @@ export function registerBannersOpenApi(registry: OpenAPIRegistry) {
 
   registry.registerPath({
     method: 'patch',
-    path: '/banners/me',
+    path: '/banners/{id}',
     description: 'Update your banner',
     summary: 'Update banner',
     security: [{ bearerAuth: [] }],
     request: {
       body: {
         content: {
-          'application/json': {
-            schema: bannerUpdateSchema,
+          'multipart/form-data': {
+            schema: bannerUpdateApiSchema,
           },
         },
       },
@@ -214,7 +215,8 @@ export function registerBannersOpenApi(registry: OpenAPIRegistry) {
 
 export function bannersRoutes(env: Env) {
   const repo = new BannerRepository(env.DB);
-  const service = new BannerService(repo);
+  const imageRepo = new MockImageUploadRepository();
+  const service = new BannerService(repo, imageRepo);
   const controller = new BannerController(service);
 
   return {
@@ -235,4 +237,3 @@ export function bannersRoutes(env: Env) {
     ),
   };
 }
-
