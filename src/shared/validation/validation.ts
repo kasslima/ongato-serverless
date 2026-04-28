@@ -1,5 +1,64 @@
 import { ZodSchema } from "zod"
-import { ValidationResult } from "../type"
+import { ValidationResult, MultipartFile } from "../type"
+
+export interface MultipartFormDataResult {
+  success: boolean
+  body?: Record<string, unknown>
+  file?: MultipartFile
+  errors?: Record<string, string[]>
+}
+
+export async function parseMultipartFormData(req: Request, imageField = "image"): Promise<MultipartFormDataResult> {
+  const contentType = req.headers.get("content-type") || ""
+
+  if (!contentType.includes("multipart/form-data")) {
+    return {
+      success: false,
+      errors: { contentType: ["multipart/form-data is required"] }
+    }
+  }
+
+  const formData = await req.formData()
+  const body: Record<string, unknown> = {}
+  let file: MultipartFile | undefined
+
+  const imageFile = formData.get(imageField)
+  if (imageFile && imageFile instanceof File) {
+    file = {
+      imageBuffer: await imageFile.arrayBuffer(),
+      fileName: imageFile.name,
+      fileType: imageFile.type,
+    }
+  }
+
+  for (const [key, value] of formData.entries()) {
+    if (key === imageField) continue
+    body[key] = value instanceof File ? value : value
+  }
+
+  return {
+    success: true,
+    body,
+    file,
+  }
+}
+
+export async function validateMultipartImage(req: Request, imageField = "image"): Promise<MultipartFormDataResult> {
+  const parsed = await parseMultipartFormData(req, imageField)
+
+  if (!parsed.success) {
+    return parsed
+  }
+
+  if (!parsed.file) {
+    return {
+      success: false,
+      errors: { [imageField]: ["Image file is required"] }
+    }
+  }
+
+  return parsed
+}
 
 export function validateBody<T>(body: unknown, schema: ZodSchema<T>): ValidationResult<T> {
     const result = schema.safeParse(body)

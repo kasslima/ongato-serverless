@@ -32,5 +32,9 @@ export const bannerUpdateSchema = bannerSchema
   });
 export type BannerUpdateInput = z.infer<typeof bannerUpdateSchema>;
 
-export const bannerUpdateApiSchema = bannerUpdateSchema;
+export const bannerUpdateApiSchema = bannerUpdateSchema
+  .omit({
+    imageUrl: true
+  })
+  .strict();
 export type BannerUpdateApiInput = z.infer<typeof bannerUpdateApiSchema>;

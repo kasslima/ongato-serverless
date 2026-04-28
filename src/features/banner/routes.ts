@@ -162,6 +162,9 @@ export function registerBannersOpenApi(registry: OpenAPIRegistry) {
           'multipart/form-data': {
             schema: bannerUpdateApiSchema,
           },
+          'application/json': {
+            schema: bannerUpdateApiSchema,
+          },
         },
       },
     },

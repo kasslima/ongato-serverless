@@ -1,13 +1,14 @@
 import { IBannerRepository } from "./repository";
 import { Banner, BannerCreateApiInput, BannerUpdateApiInput } from "./schema";
 import { IImageUploadRepository } from "../../shared/storage/image-storage";
+import { MultipartFile } from "../../shared/type";
 
 
 export interface IBannerService {
   getAll(): Promise<Banner[]>;
   getById(id: number): Promise<Banner | null>;
-  create(input: BannerCreateApiInput, imageBuffer?: ArrayBuffer, fileName?: string, contentType?: string): Promise<Banner>;
-  update(id: number, input: BannerUpdateApiInput, imageBuffer?: ArrayBuffer, fileName?: string, contentType?: string): Promise<Banner>;
+  create(input: BannerCreateApiInput, file?: MultipartFile): Promise<Banner>;
+  update(id: number, input: BannerUpdateApiInput, file?: MultipartFile): Promise<Banner>;
   delete(id: number): Promise<void>;
 }
 
@@ -25,19 +26,20 @@ export class BannerService implements IBannerService {
     return await this.repo.findById(id);
   }
 
-  async create(input: BannerCreateApiInput, imageBuffer?: ArrayBuffer, fileName?: string, contentType?: string): Promise<Banner> {
-    let imageUrl = "";
-    if (imageBuffer && fileName && contentType) {
-      imageUrl = await this.imageRepo.upload(imageBuffer, fileName, contentType);
+  async create(input: BannerCreateApiInput, file?: MultipartFile): Promise<Banner> {
+    if (!file) {
+      throw new Error("Image file is required for banner creation");
     }
-    
+
+    const imageUrl = await this.imageRepo.upload(file.imageBuffer, file.fileName, file.fileType);
+
     return this.repo.create({
       ...input,
       imageUrl
     });
   }
 
-  async update(id: number, input: BannerUpdateApiInput, imageBuffer?: ArrayBuffer, fileName?: string, contentType?: string): Promise<Banner> {
+  async update(id: number, input: BannerUpdateApiInput, file?: MultipartFile): Promise<Banner> {
 
     const banner = await this.repo.findById(id);
 
@@ -45,9 +47,11 @@ export class BannerService implements IBannerService {
       throw new Error("Banner not found");
     }
 
-    let newImageUrl = input.imageUrl;
+    const updatePayload: Record<string, unknown> = {
+      ...input
+    };
 
-    if (imageBuffer && fileName && contentType) {
+    if (file) {
       if (banner.imageUrl) {
         try {
           await this.imageRepo.delete(banner.imageUrl);
@@ -55,13 +59,10 @@ export class BannerService implements IBannerService {
           console.error("Error deleting old image:", err);
         }
       }
-      newImageUrl = await this.imageRepo.upload(imageBuffer, fileName, contentType);
+      updatePayload.imageUrl = await this.imageRepo.upload(file.imageBuffer, file.fileName, file.fileType);
     }
 
-    return await this.repo.update(id, {
-      ...input,
-      ...(newImageUrl ? { imageUrl: newImageUrl } : {})
-    });
+    return await this.repo.update(id, updatePayload as BannerUpdateApiInput & { imageUrl?: string });
   }
 
   async delete(id: number): Promise<void> {

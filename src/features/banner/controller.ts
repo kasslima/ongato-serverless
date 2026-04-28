@@ -1,5 +1,5 @@
 import { apiResponse, createdResponse, handleError, noContentResponse } from "../../shared/response/api-response";
-import { validateBody, validateParams } from "../../shared/validation/validation";
+import { parseMultipartFormData, validateBody, validateMultipartImage, validateParams } from "../../shared/validation/validation";
 import { IBannerService } from "./service";
 import { idParamSchema } from "../../shared/validation/schema";
 import { bannerCreateApiSchema, bannerUpdateApiSchema } from "./schema";
@@ -18,37 +18,17 @@ export class BannerController {
 
   async create(_req: Request): Promise<Response> {
     try {
-      const contentType = _req.headers.get("content-type") || "";
-      let input: any = {};
-      let imageBuffer: ArrayBuffer | undefined;
-      let fileName: string | undefined;
-      let fileType: string | undefined;
-
-      if (contentType.includes("multipart/form-data")) {
-        const formData = await _req.formData();
-        const imageFile = formData.get("image");
-        if (imageFile && imageFile instanceof File) {
-          imageBuffer = await imageFile.arrayBuffer();
-          fileName = imageFile.name;
-          fileType = imageFile.type;
-        }
-
-        for (const [key, value] of formData.entries()) {
-          if (key !== "image") {
-            input[key] = value;
-          }
-        }
-      } else {
-        input = await _req.json();
+      const multipart = await validateMultipartImage(_req);
+      if (!multipart.success) {
+        return apiResponse(multipart.errors ?? {}, "Create banner requires multipart/form-data with image");
       }
 
-      const validation = validateBody(input, bannerCreateApiSchema);
-
+      const validation = validateBody(multipart.body ?? {}, bannerCreateApiSchema);
       if (!validation.success) {
         return createdResponse(validation.errors, "Validation failed");
       }
 
-      const created = await this.service.create(validation.data, imageBuffer, fileName, fileType);
+      const created = await this.service.create(validation.data, multipart.file);
       return apiResponse(created, "Banner created successfully");
     } catch (error) {
       return handleError(error);
@@ -75,24 +55,16 @@ export class BannerController {
     try {
       const contentType = _req.headers.get("content-type") || "";
       let inputBody: any = {};
-      let imageBuffer: ArrayBuffer | undefined;
-      let fileName: string | undefined;
-      let fileType: string | undefined;
+      let file = undefined;
 
       if (contentType.includes("multipart/form-data")) {
-        const formData = await _req.formData();
-        const imageFile = formData.get("image");
-        if (imageFile && imageFile instanceof File) {
-          imageBuffer = await imageFile.arrayBuffer();
-          fileName = imageFile.name;
-          fileType = imageFile.type;
+        const multipart = await parseMultipartFormData(_req);
+        if (!multipart.success) {
+          return apiResponse(multipart.errors ?? {}, "Invalid multipart/form-data");
         }
 
-        for (const [key, value] of formData.entries()) {
-          if (key !== "image") {
-            inputBody[key] = value;
-          }
-        }
+        inputBody = multipart.body ?? {};
+        file = multipart.file;
       } else {
         inputBody = await _req.json();
       }
@@ -110,8 +82,8 @@ export class BannerController {
         return apiResponse(validationParams.errors, "Validation failed");
       }
 
-      const created = await this.service.update(validationParams.data.id, validationBody.data, imageBuffer, fileName, fileType);
-      return apiResponse(created, "Banner updated successfully");
+      const updated = await this.service.update(validationParams.data.id, validationBody.data, file);
+      return apiResponse(updated, "Banner updated successfully");
     } catch (error) {
       return handleError(error);
     }
