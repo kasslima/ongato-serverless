@@ -4,7 +4,7 @@ import { BannerRepository } from "./repository";
 import { Env } from "../../shared/type";
 import { withAuth } from "../../shared/auth/middleware";
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
-import { bannerSchema, bannerCreateApiSchema, bannerUpdateApiSchema } from "./schema";
+import { bannerCreateInputSchema, bannerSchema, bannerUpdateInputSchema } from "./schema";
 import { z } from "zod";
 import { validationErrorSchema, errorResponseSchema } from "../../shared/errors/schema";
 import { idParamSchema } from "../../shared/validation/schema";
@@ -58,7 +58,7 @@ export function registerBannersOpenApi(registry: OpenAPIRegistry) {
       body: {
         content: {
           'multipart/form-data': {
-            schema: bannerCreateApiSchema,
+            schema: bannerCreateInputSchema,
           },
         },
       },
@@ -160,10 +160,10 @@ export function registerBannersOpenApi(registry: OpenAPIRegistry) {
       body: {
         content: {
           'multipart/form-data': {
-            schema: bannerUpdateApiSchema,
+            schema: bannerUpdateInputSchema,
           },
           'application/json': {
-            schema: bannerUpdateApiSchema,
+            schema: bannerUpdateInputSchema,
           },
         },
       },

@@ -2,7 +2,7 @@ import { apiResponse, createdResponse, handleError, noContentResponse } from "..
 import { parseMultipartFormData, validateBody, validateMultipartImage, validateParams } from "../../shared/validation/validation";
 import { IBannerService } from "./service";
 import { idParamSchema } from "../../shared/validation/schema";
-import { bannerCreateApiSchema, bannerUpdateApiSchema } from "./schema";
+import { bannerCreateInputSchema, bannerUpdateInputSchema } from "./schema";
 
 export class BannerController {
   constructor(private readonly service: IBannerService) { }
@@ -23,7 +23,7 @@ export class BannerController {
         return apiResponse(multipart.errors ?? {}, "Create banner requires multipart/form-data with image");
       }
 
-      const validation = validateBody(multipart.body ?? {}, bannerCreateApiSchema);
+      const validation = validateBody(multipart.body ?? {}, bannerCreateInputSchema);
       if (!validation.success) {
         return createdResponse(validation.errors, "Validation failed");
       }
@@ -69,7 +69,7 @@ export class BannerController {
         inputBody = await _req.json();
       }
 
-      const validationBody = validateBody(inputBody, bannerUpdateApiSchema);
+      const validationBody = validateBody(inputBody, bannerUpdateInputSchema);
 
       if (!validationBody.success) {
         return apiResponse(validationBody.errors, "Validation failed");

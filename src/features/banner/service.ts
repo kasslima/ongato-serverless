@@ -1,5 +1,5 @@
 import { IBannerRepository } from "./repository";
-import { Banner, BannerCreateApiInput, BannerUpdateApiInput } from "./schema";
+import { Banner, BannerCreateInput, BannerUpdateInput } from "./schema";
 import { IImageUploadRepository } from "../../shared/storage/image-storage";
 import { MultipartFile } from "../../shared/type";
 
@@ -7,8 +7,8 @@ import { MultipartFile } from "../../shared/type";
 export interface IBannerService {
   getAll(): Promise<Banner[]>;
   getById(id: number): Promise<Banner | null>;
-  create(input: BannerCreateApiInput, file?: MultipartFile): Promise<Banner>;
-  update(id: number, input: BannerUpdateApiInput, file?: MultipartFile): Promise<Banner>;
+  create(input: BannerCreateInput, file?: MultipartFile): Promise<Banner>;
+  update(id: number, input: BannerUpdateInput, file?: MultipartFile): Promise<Banner>;
   delete(id: number): Promise<void>;
 }
 
@@ -26,7 +26,7 @@ export class BannerService implements IBannerService {
     return await this.repo.findById(id);
   }
 
-  async create(input: BannerCreateApiInput, file?: MultipartFile): Promise<Banner> {
+  async create(input: BannerCreateInput, file?: MultipartFile): Promise<Banner> {
     if (!file) {
       throw new Error("Image file is required for banner creation");
     }
@@ -39,7 +39,7 @@ export class BannerService implements IBannerService {
     });
   }
 
-  async update(id: number, input: BannerUpdateApiInput, file?: MultipartFile): Promise<Banner> {
+  async update(id: number, input: BannerUpdateInput, file?: MultipartFile): Promise<Banner> {
 
     const banner = await this.repo.findById(id);
 
@@ -62,7 +62,7 @@ export class BannerService implements IBannerService {
       updatePayload.imageUrl = await this.imageRepo.upload(file.imageBuffer, file.fileName, file.fileType);
     }
 
-    return await this.repo.update(id, updatePayload as BannerUpdateApiInput & { imageUrl?: string });
+    return await this.repo.update(id, updatePayload as BannerUpdateInput & { imageUrl?: string });
   }
 
   async delete(id: number): Promise<void> {

@@ -2,14 +2,14 @@
 import { desc, eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import { banners } from "../../db/schema";
-import { Banner, BannerCreateInput, BannerUpdateInput } from "./schema";
+import { Banner, BannerCreate, BannerCreateInput, BannerUpdate, BannerUpdateInput } from "./schema";
 
 
 export interface IBannerRepository {
     getAll(): Promise<Banner[]>;
     findById(id: number): Promise<Banner | null>;
     findByTitle(title: string): Promise<Banner | null>;
-    create(input: BannerCreateInput): Promise<Banner>;
+    create(input: BannerCreate): Promise<Banner>;
     update(id: number, input: BannerUpdateInput): Promise<Banner>;
     delete(id: number): Promise<void>;
 }
@@ -60,7 +60,7 @@ export class BannerRepository implements IBannerRepository {
         return rows[0]
     }
 
-    async create(input: BannerCreateInput): Promise<Banner> {
+    async create(input: BannerCreate): Promise<Banner> {
         const rows = await this.orm
             .insert(banners)
             .values(input)
@@ -73,7 +73,7 @@ export class BannerRepository implements IBannerRepository {
         return rows[0]
     }
 
-    async update(id: number, input: BannerUpdateInput): Promise<Banner> {
+    async update(id: number, input: BannerUpdate): Promise<Banner> {
         const rows = await this.orm
             .update(banners)
             .set(input)
