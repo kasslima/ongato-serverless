@@ -1,6 +1,6 @@
 import { IBannerRepository } from "./repository";
 import { Banner, BannerCreateApiInput, BannerUpdateApiInput } from "./schema";
-import { IImageUploadRepository } from "../../shared/storage/image-upload.repository";
+import { IImageUploadRepository } from "../../shared/storage/image-storage";
 
 
 export interface IBannerService {

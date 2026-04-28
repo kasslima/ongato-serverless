@@ -8,7 +8,7 @@ import { bannerSchema, bannerCreateApiSchema, bannerUpdateApiSchema } from "./sc
 import { z } from "zod";
 import { validationErrorSchema, errorResponseSchema } from "../../shared/errors/schema";
 import { idParamSchema } from "../../shared/validation/schema";
-import { MockImageUploadRepository } from "../../shared/storage/image-upload.repository";
+import { MockImageUploadRepository } from "../../shared/storage/image-storage";
 
 export function registerBannersOpenApi(registry: OpenAPIRegistry) {
   registry.registerPath({
