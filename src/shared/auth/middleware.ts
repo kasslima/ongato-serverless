@@ -1,11 +1,11 @@
-import { TokenPayload } from "../../features/auth/schema";
+import { Jwt } from "../../features/auth/schema";
 import { verifyToken } from "./jwt";
 
 type AuthenticatedHandler = (
   req: Request,
   env: any,
   ctx: any,
-  user: TokenPayload,
+  user: Jwt,
   params: Record<string, string>
 ) => Promise<Response> | Response;
 
