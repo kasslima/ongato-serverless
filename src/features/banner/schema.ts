@@ -33,9 +33,15 @@ export const bannerUpdateSchema = bannerSchema
   });
 export type BannerUpdate = z.infer<typeof bannerUpdateSchema>;
 
-export const bannerUpdateInputSchema = bannerUpdateSchema
+export const bannerUpdateInputSchema = bannerSchema
   .omit({
+    id: true,
+    createdAt: true,
     imageUrl: true
+  })
+  .partial()
+  .refine(data => Object.keys(data).length > 0, {
+    message: "Pelo menos um campo deve ser enviado para atualização"
   })
   .strict();
 export type BannerUpdateInput = z.infer<typeof bannerUpdateInputSchema>;
