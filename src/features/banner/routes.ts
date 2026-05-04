@@ -16,7 +16,6 @@ export function registerBannersOpenApi(registry: OpenAPIRegistry) {
     path: '/banners',
     description: 'Get all banners',
     summary: 'Retrieve banners',
-    security: [{ bearerAuth: [] }],
     responses: {
       200: {
         description: 'Banners retrieved',
@@ -26,22 +25,6 @@ export function registerBannersOpenApi(registry: OpenAPIRegistry) {
               result: z.array(bannerSchema),
               message: z.string(),
             }),
-          },
-        },
-      },
-      401: {
-        description: 'Unauthorized',
-        content: {
-          'application/json': {
-            schema: errorResponseSchema,
-          },
-        },
-      },
-      403: {
-        description: 'Forbidden',
-        content: {
-          'application/json': {
-            schema: errorResponseSchema,
           },
         },
       },
@@ -223,9 +206,7 @@ export function bannersRoutes(env: Env) {
   const controller = new BannerController(service);
 
   return {
-    "GET /banners": withAuth({ roles: ["admin", "dev"] })(
-      (req, _env, _ctx, _banner) => controller.getAll(req)
-    ),
+    "GET /banners": (req: Request) => controller.getAll(req),
 
     "POST /banners": withAuth({ roles: ["dev"] })(
       (req, _env, _ctx, _banner) => controller.create(req)
