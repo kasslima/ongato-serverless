@@ -2,6 +2,7 @@ import { OpenAPIRegistry, OpenApiGeneratorV3, extendZodWithOpenApi } from '@aste
 import { z } from 'zod';
 import { registerAuthOpenApi } from './features/auth/routes';
 import { registerUsersOpenApi } from './features/user/routes';
+import { registerBannersOpenApi } from './features/banner/routes';
 
 // Extend Zod with OpenAPI
 extendZodWithOpenApi(z);
@@ -24,6 +25,7 @@ function bootstrapOpenApi() {
 
   registerAuthOpenApi(registry);
   registerUsersOpenApi(registry);
+  registerBannersOpenApi(registry);
   isOpenApiBootstrapped = true;
 }
 
