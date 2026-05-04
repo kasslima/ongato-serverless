@@ -7,9 +7,9 @@ export const idParamSchema = z.object({
     .positive({ message: "O número precisa ser maior de 0" })
 })
 
-//query
-export const QuerySchema = z.object({
-  page: z.coerce.number().int().positive().default(1),
-  limit: z.coerce.number().int().positive().max(100).default(10)
-})
-export type QuerySchemaDTO = z.infer<typeof QuerySchema>
+// query
+export const cursorQuerySchema = z.object({
+  cursor: z.coerce.number().int().positive().optional(),
+  limit: z.coerce.number().int().positive().max(100).default(10),
+});
+export type CursorQuerySchemaDTO = z.infer<typeof cursorQuerySchema>;
