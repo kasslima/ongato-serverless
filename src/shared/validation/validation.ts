@@ -8,6 +8,12 @@ export interface MultipartFormDataResult {
   errors?: Record<string, string[]>
 }
 
+export const DEFAULT_ALLOWED_IMAGE_TYPES = [
+  'image/jpeg',
+  'image/svg+xml',
+  'image/webp'
+]
+
 export async function parseMultipartFormData(req: Request, imageField = "image"): Promise<MultipartFormDataResult> {
   const contentType = req.headers.get("content-type") || ""
 
@@ -43,7 +49,11 @@ export async function parseMultipartFormData(req: Request, imageField = "image")
   }
 }
 
-export async function validateMultipartImage(req: Request, imageField = "image"): Promise<MultipartFormDataResult> {
+export async function validateMultipartImage(
+  req: Request,
+  imageField = "image",
+  allowedTypes = DEFAULT_ALLOWED_IMAGE_TYPES
+): Promise<MultipartFormDataResult> {
   const parsed = await parseMultipartFormData(req, imageField)
 
   if (!parsed.success) {
@@ -54,6 +64,15 @@ export async function validateMultipartImage(req: Request, imageField = "image")
     return {
       success: false,
       errors: { [imageField]: ["Image file is required"] }
+    }
+  }
+
+  // Validate file type
+  if (!allowedTypes.includes(parsed.file.fileType)) {
+    const typesList = allowedTypes.join(', ')
+    return {
+      success: false,
+      errors: { [imageField]: [`Accepted file types: ${typesList}`] }
     }
   }
 
