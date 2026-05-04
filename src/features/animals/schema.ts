@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { cursorQuerySchema } from "../../shared/validation/schema";
 
 export const animalSchema = z.object({
   id: z.number(),
@@ -60,3 +61,10 @@ export const animalUpdateInputSchema = animalSchema
   })
   .strict();
 export type AnimalUpdateInput = z.infer<typeof animalUpdateInputSchema>;
+
+export const animalListQuerySchema = cursorQuerySchema.extend({
+  name: z.string().trim().min(1).optional(),
+  type: z.enum(["gato", "cachorro"]).optional(),
+  gender: z.enum(["macho", "femea"]).optional(),
+});
+export type AnimalListQuery = z.infer<typeof animalListQuerySchema>;

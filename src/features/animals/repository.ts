@@ -1,12 +1,12 @@
 
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq, like, lt } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import { animals } from "../../db/schema";
-import { Animal, AnimalCreate, AnimalCreateInput, AnimalUpdate, AnimalUpdateInput } from "./schema";
+import { Animal, AnimalCreate, AnimalListQuery, AnimalUpdate, AnimalUpdateInput } from "./schema";
 
 
 export interface IAnimalRepository {
-    getAll(): Promise<Animal[]>;
+    getAll(query: AnimalListQuery): Promise<Animal[]>;
     findById(id: number): Promise<Animal | null>;
     create(input: AnimalCreate): Promise<Animal>;
     update(id: number, input: AnimalUpdateInput): Promise<Animal>;
@@ -22,10 +22,30 @@ export class AnimalRepository implements IAnimalRepository {
      }
     
 
-    async getAll(): Promise<Animal[]> {
+    async getAll(query: AnimalListQuery): Promise<Animal[]> {
+        const filters = [];
+
+        if (query.cursor) {
+            filters.push(lt(animals.id, query.cursor));
+        }
+
+        if (query.name) {
+            filters.push(like(animals.name, `%${query.name}%`));
+        }
+
+        if (query.type) {
+            filters.push(eq(animals.type, query.type));
+        }
+
+        if (query.gender) {
+            filters.push(eq(animals.gender, query.gender));
+        }
+
         const rows = await this.orm
             .select()
             .from(animals)
+            .where(filters.length > 0 ? and(...filters) : undefined)
+            .limit(query.limit)
             .orderBy(desc(animals.id));
 
         return rows

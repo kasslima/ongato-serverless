@@ -1,15 +1,20 @@
 import { apiResponse, createdResponse, handleError, noContentResponse } from "../../shared/response/api-response";
-import { parseMultipartFormData, validateBody, validateMultipartImage, validateParams } from "../../shared/validation/validation";
+import { parseMultipartFormData, validateBody, validateMultipartImage, validateParams, validateQuery } from "../../shared/validation/validation";
 import { IAnimalService } from "./service";
 import { idParamSchema } from "../../shared/validation/schema";
-import { animalCreateInputSchema, animalUpdateInputSchema } from "./schema";
+import { animalCreateInputSchema, animalListQuerySchema, animalUpdateInputSchema } from "./schema";
 
 export class AnimalController {
   constructor(private readonly service: IAnimalService) { }
 
   async getAll(_req: Request): Promise<Response> {
     try {
-      const animals = await this.service.getAll();
+      const query = validateQuery(new URL(_req.url).searchParams, animalListQuerySchema);
+      if (!query.success) {
+        return apiResponse(query.errors, "Validation failed");
+      }
+
+      const animals = await this.service.getAll(query.data);
       return apiResponse(animals, "animals retrieved successfully");
     } catch (error) {
       return handleError(error);
