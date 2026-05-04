@@ -1,6 +1,5 @@
 import { sql } from "drizzle-orm";
 import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
-import { create } from "node:domain";
 
 export const users = sqliteTable("users", {
   id: integer("id").primaryKey(),
@@ -15,11 +14,11 @@ export const animals = sqliteTable("animals", {
   id: integer("id").primaryKey(),
   name: text("name").notNull(),
   imageUrl : text("image_url").notNull(),
-  age : text("age").notNull(),
-  gender : text("gender").notNull(),
-  size: text("size").notNull(),
-  type: text("type").notNull(),
-  description : text("description").notNull(),
+  age : text("age", { enum: ["0 a 6 meses", "6 a 12 meses", "1 a 2 anos", "2 a 5 anos", "5 a 9 anos", "mais de 9 anos"] }).notNull(),
+  gender : text("gender", { enum: ["macho", "femea"] }).notNull(),
+  size: text("size", { enum: ["pequeno", "medio", "grande"] }).notNull(),
+  type: text("type", { enum: ["gato", "cachorro"] }).notNull(),
+  description : text("description"),
   createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
   updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });
