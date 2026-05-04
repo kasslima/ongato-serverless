@@ -3,6 +3,8 @@ import { z } from "zod"
 export type Env = {
   DB: D1Database;
   JWT_SECRET: string;
+  ENVIRONMENT?: "development" | "production";
+  CORS_ALLOWED_ORIGINS?: string; // Separado por vírgula em produção
 };
 
 export const multipartFileSchema = z.object({

@@ -3,6 +3,7 @@ import { usersRoutes } from "./features/user/routes";
 import { docsRoutes } from "./features/docs/routes";
 import { Env } from "./shared/type";
 import { bannersRoutes } from "./features/banner/routes";
+import { handleCorsPreFlight, addCorsHeaders } from "./shared/cors";
 
 //import { petsRoutes } from "./features/pets/routes";
 
@@ -53,6 +54,11 @@ function matchRoute(
 export async function router( req: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
   const url = new URL(req.url);
 
+  // Handle CORS preflight requests
+  if (req.method === "OPTIONS") {
+    return handleCorsPreFlight(req, env);
+  }
+
   const routes: Record<string, RouteHandler> = {
     ...usersRoutes(env),
     ...authsRoutes(env),
@@ -74,8 +80,10 @@ export async function router( req: Request, env: Env, ctx: ExecutionContext): Pr
   }
 
   if (!handler) {
-    return new Response("Not Found", { status: 404 });
+    const response = new Response("Not Found", { status: 404 });
+    return addCorsHeaders(response, req, env);
   }
 
-  return handler(req, env, ctx, params);
+  const response = await handler(req, env, ctx, params);
+  return addCorsHeaders(response, req, env);
 }
