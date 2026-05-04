@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { cursorQuerySchema } from "../../shared/validation/schema";
 
 export const userSchema = z.object({
     id: z.number(),
@@ -33,3 +34,9 @@ export const userResponseSchema = userSchema.omit({
     password: true
 });
 export type UserResponse = z.infer<typeof userResponseSchema>;
+
+export const userListQuerySchema = cursorQuerySchema.extend({
+    name: z.string().trim().min(1).optional(),
+    email: z.string().trim().min(1).optional(),
+});
+export type UserListQuery = z.infer<typeof userListQuerySchema>;

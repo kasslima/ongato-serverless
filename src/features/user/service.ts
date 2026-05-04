@@ -1,9 +1,9 @@
 import { hashPassword } from "../../shared/crypto/password";
 import { IUserRepository } from "./repository";
-import { User, UserCreateInput, UserResponse, UserUpdateInput } from "./schema";
+import { UserCreateInput, UserListQuery, UserResponse, UserUpdateInput } from "./schema";
 
 export interface IUserService {
-  getAll(): Promise<UserResponse[]>;
+  getAll(query: UserListQuery): Promise<UserResponse[]>;
   getById(id: number): Promise<UserResponse | null>;
   create(input: UserCreateInput): Promise<UserResponse>;
   update(id: number, input: UserUpdateInput): Promise<UserResponse>;
@@ -13,8 +13,8 @@ export interface IUserService {
 export class UserService implements IUserService {
   constructor(private readonly repo: IUserRepository) { }
 
-  async getAll(): Promise<UserResponse[]> {
-    return await this.repo.getAll();
+  async getAll(query: UserListQuery): Promise<UserResponse[]> {
+    return await this.repo.getAll(query);
   }
 
   async getById(id: number): Promise<UserResponse | null> {

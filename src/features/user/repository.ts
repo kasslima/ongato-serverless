@@ -1,12 +1,12 @@
 
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq, like, lt } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import { users } from "../../db/schema";
-import { User, UserCreateInput, UserResponse, UserUpdateInput } from "./schema";
+import { User, UserCreateInput, UserListQuery, UserResponse, UserUpdateInput } from "./schema";
 
 
 export interface IUserRepository {
-    getAll(): Promise<UserResponse[]>;
+    getAll(query: UserListQuery): Promise<UserResponse[]>;
     findById(id: number): Promise<UserResponse | null>;
     findByEmail(email: string): Promise<User | null>;
     create(input: UserCreateInput): Promise<UserResponse>;
@@ -23,7 +23,21 @@ export class UserRepository implements IUserRepository {
      }
     
 
-    async getAll(): Promise<UserResponse[]> {
+    async getAll(query: UserListQuery): Promise<UserResponse[]> {
+        const filters = [];
+
+        if (query.cursor) {
+            filters.push(lt(users.id, query.cursor));
+        }
+
+        if (query.name) {
+            filters.push(like(users.name, `%${query.name}%`));
+        }
+
+        if (query.email) {
+            filters.push(like(users.email, `%${query.email}%`));
+        }
+
         const rows = await this.orm
             .select({
                 id: users.id,
@@ -33,6 +47,8 @@ export class UserRepository implements IUserRepository {
                 createdAt: users.createdAt
             })
             .from(users)
+            .where(filters.length > 0 ? and(...filters) : undefined)
+            .limit(query.limit)
             .orderBy(desc(users.id));
 
         return rows
