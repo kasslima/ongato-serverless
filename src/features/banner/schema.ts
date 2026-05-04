@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { cursorQuerySchema } from "../../shared/validation/schema";
 
 export const bannerSchema = z.object({
   id: z.number(),
@@ -45,3 +46,8 @@ export const bannerUpdateInputSchema = bannerSchema
   })
   .strict();
 export type BannerUpdateInput = z.infer<typeof bannerUpdateInputSchema>;
+
+export const bannerListQuerySchema = cursorQuerySchema.extend({
+  title: z.string().trim().min(1).optional(),
+});
+export type BannerListQuery = z.infer<typeof bannerListQuerySchema>;

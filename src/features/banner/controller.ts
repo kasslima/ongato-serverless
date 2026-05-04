@@ -1,15 +1,20 @@
 import { apiResponse, createdResponse, handleError, noContentResponse } from "../../shared/response/api-response";
-import { parseMultipartFormData, validateBody, validateMultipartImage, validateParams } from "../../shared/validation/validation";
+import { parseMultipartFormData, validateBody, validateMultipartImage, validateParams, validateQuery } from "../../shared/validation/validation";
 import { IBannerService } from "./service";
 import { idParamSchema } from "../../shared/validation/schema";
-import { bannerCreateInputSchema, bannerUpdateInputSchema } from "./schema";
+import { bannerCreateInputSchema, bannerListQuerySchema, bannerUpdateInputSchema } from "./schema";
 
 export class BannerController {
   constructor(private readonly service: IBannerService) { }
 
   async getAll(_req: Request): Promise<Response> {
     try {
-      const banners = await this.service.getAll();
+      const query = validateQuery(new URL(_req.url).searchParams, bannerListQuerySchema);
+      if (!query.success) {
+        return apiResponse(query.errors, "Validation failed");
+      }
+
+      const banners = await this.service.getAll(query.data);
       return apiResponse(banners, "banners retrieved successfully");
     } catch (error) {
       return handleError(error);

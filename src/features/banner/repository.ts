@@ -1,12 +1,12 @@
 
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq, like, lt } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import { banners } from "../../db/schema";
-import { Banner, BannerCreate, BannerCreateInput, BannerUpdate, BannerUpdateInput } from "./schema";
+import { Banner, BannerCreate, BannerListQuery, BannerUpdate, BannerUpdateInput } from "./schema";
 
 
 export interface IBannerRepository {
-    getAll(): Promise<Banner[]>;
+    getAll(query: BannerListQuery): Promise<Banner[]>;
     findById(id: number): Promise<Banner | null>;
     findByTitle(title: string): Promise<Banner | null>;
     create(input: BannerCreate): Promise<Banner>;
@@ -23,10 +23,22 @@ export class BannerRepository implements IBannerRepository {
      }
     
 
-    async getAll(): Promise<Banner[]> {
+    async getAll(query: BannerListQuery): Promise<Banner[]> {
+        const filters = [];
+
+        if (query.cursor) {
+            filters.push(lt(banners.id, query.cursor));
+        }
+
+        if (query.title) {
+            filters.push(like(banners.title, `%${query.title}%`));
+        }
+
         const rows = await this.orm
             .select()
             .from(banners)
+            .where(filters.length > 0 ? and(...filters) : undefined)
+            .limit(query.limit)
             .orderBy(desc(banners.id));
 
         return rows
