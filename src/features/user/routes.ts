@@ -4,7 +4,7 @@ import { UserRepository } from "./repository";
 import { Env } from "../../shared/type";
 import { withAuth } from "../../shared/auth/middleware";
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
-import { userSchema, userCreateSchema, userResponseSchema, userUpdateSchema } from "./schema";
+import { userCreateSchema, userListQuerySchema, userResponseSchema, userUpdateSchema } from "./schema";
 import { z } from "zod";
 import { validationErrorSchema, errorResponseSchema } from "../../shared/errors/schema";
 import { idParamSchema } from "../../shared/validation/schema";
@@ -16,6 +16,9 @@ export function registerUsersOpenApi(registry: OpenAPIRegistry) {
     description: 'Get all users',
     summary: 'Retrieve users',
     security: [{ bearerAuth: [] }],
+    request: {
+      query: userListQuerySchema,
+    },
     responses: {
       200: {
         description: 'Users retrieved',

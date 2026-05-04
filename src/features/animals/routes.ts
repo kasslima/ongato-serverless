@@ -4,7 +4,7 @@ import { AnimalRepository } from "./repository";
 import { Env } from "../../shared/type";
 import { withAuth } from "../../shared/auth/middleware";
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
-import { animalCreateInputSchema, animalSchema, animalUpdateInputSchema } from "./schema";
+import { animalCreateInputSchema, animalListQuerySchema, animalSchema, animalUpdateInputSchema } from "./schema";
 import { z } from "zod";
 import { validationErrorSchema, errorResponseSchema } from "../../shared/errors/schema";
 import { idParamSchema } from "../../shared/validation/schema";
@@ -16,6 +16,9 @@ export function registerAnimalsOpenApi(registry: OpenAPIRegistry) {
     path: '/animals',
     description: 'Get all animals',
     summary: 'Retrieve animals',
+    request: {
+      query: animalListQuerySchema,
+    },
     responses: {
       200: {
         description: 'Animals retrieved',

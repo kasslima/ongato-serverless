@@ -4,7 +4,7 @@ import { BannerRepository } from "./repository";
 import { Env } from "../../shared/type";
 import { withAuth } from "../../shared/auth/middleware";
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
-import { bannerCreateInputSchema, bannerSchema, bannerUpdateInputSchema } from "./schema";
+import { bannerCreateInputSchema, bannerListQuerySchema, bannerSchema, bannerUpdateInputSchema } from "./schema";
 import { z } from "zod";
 import { validationErrorSchema, errorResponseSchema } from "../../shared/errors/schema";
 import { idParamSchema } from "../../shared/validation/schema";
@@ -16,6 +16,9 @@ export function registerBannersOpenApi(registry: OpenAPIRegistry) {
     path: '/banners',
     description: 'Get all banners',
     summary: 'Retrieve banners',
+    request: {
+      query: bannerListQuerySchema,
+    },
     responses: {
       200: {
         description: 'Banners retrieved',
