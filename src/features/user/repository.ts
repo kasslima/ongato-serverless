@@ -2,11 +2,11 @@
 import { and, desc, eq, like, lt } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import { users } from "../../db/schema";
-import { User, UserCreateInput, UserListQuery, UserResponse, UserUpdateInput } from "./schema";
+import { User, UserCreateInput, UserQuery, UserResponse, UserUpdateInput } from "./schema";
 
 
 export interface IUserRepository {
-    getAll(query: UserListQuery): Promise<UserResponse[]>;
+    getAll(query: UserQuery): Promise<UserResponse[]>;
     findById(id: number): Promise<UserResponse | null>;
     findByEmail(email: string): Promise<User | null>;
     create(input: UserCreateInput): Promise<UserResponse>;
@@ -23,7 +23,7 @@ export class UserRepository implements IUserRepository {
      }
     
 
-    async getAll(query: UserListQuery): Promise<UserResponse[]> {
+    async getAll(query: UserQuery): Promise<UserResponse[]> {
         const filters = [];
 
         if (query.cursor) {

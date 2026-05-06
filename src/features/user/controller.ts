@@ -1,6 +1,6 @@
 import { apiResponse, createdResponse, handleError, noContentResponse } from "../../shared/response/api-response";
 import { validateBody, validateParams, validateQuery } from "../../shared/validation/validation";
-import { userCreateSchema, userListQuerySchema, userUpdateSchema } from "./schema";
+import { userCreateSchema, userQuerySchema, userUpdateSchema } from "./schema";
 import { IUserService } from "./service";
 import { idParamSchema } from "../../shared/validation/schema";
 import { Jwt } from "../auth/schema";
@@ -10,7 +10,7 @@ export class UserController {
 
   async getAll(_req: Request): Promise<Response> {
     try {
-      const query = validateQuery(new URL(_req.url).searchParams, userListQuerySchema);
+      const query = validateQuery(new URL(_req.url).searchParams, userQuerySchema);
       if (!query.success) {
         return apiResponse(query.errors, "Validation failed");
       }
