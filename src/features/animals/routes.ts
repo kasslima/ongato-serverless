@@ -8,7 +8,7 @@ import { animalCreateInputSchema, animalListQuerySchema, animalSchema, animalUpd
 import { z } from "zod";
 import { validationErrorSchema, errorResponseSchema } from "../../shared/errors/schema";
 import { idParamSchema } from "../../shared/validation/schema";
-import { MockImageUploadRepository } from "../../shared/storage/image-storage";
+import { R2ImageUploadRepository } from "../../shared/storage/image-storage";
 
 export function registerAnimalsOpenApi(registry: OpenAPIRegistry) {
   registry.registerPath({
@@ -204,7 +204,7 @@ export function registerAnimalsOpenApi(registry: OpenAPIRegistry) {
 
 export function animalsRoutes(env: Env) {
   const repo = new AnimalRepository(env.DB);
-  const imageRepo = new MockImageUploadRepository();
+  const imageRepo = new R2ImageUploadRepository(env.IMAGES_BUCKET, env.R2_PUBLIC_URL);
   const service = new AnimalService(repo, imageRepo);
   const controller = new AnimalController(service);
 
