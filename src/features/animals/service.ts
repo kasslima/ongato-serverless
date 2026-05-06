@@ -1,11 +1,11 @@
 import { IAnimalRepository } from "./repository";
-import { Animal, AnimalCreateInput, AnimalListQuery, AnimalUpdateInput } from "./schema";
+import { Animal, AnimalCreateInput, AnimalQuery, AnimalUpdateInput } from "./schema";
 import { IImageUploadRepository } from "../../shared/storage/image-storage";
 import { MultipartFile } from "../../shared/type";
 
 
 export interface IAnimalService {
-  getAll(query: AnimalListQuery): Promise<Animal[]>;
+  getAll(query: AnimalQuery): Promise<Animal[]>;
   getById(id: number): Promise<Animal | null>;
   create(input: AnimalCreateInput, file?: MultipartFile): Promise<Animal>;
   update(id: number, input: AnimalUpdateInput, file?: MultipartFile): Promise<Animal>;
@@ -18,7 +18,7 @@ export class AnimalService implements IAnimalService {
     private readonly imageRepo: IImageUploadRepository
   ) { }
 
-  async getAll(query: AnimalListQuery): Promise<Animal[]> {
+  async getAll(query: AnimalQuery): Promise<Animal[]> {
     return await this.repo.getAll(query);
   }
 

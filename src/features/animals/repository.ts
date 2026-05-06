@@ -2,11 +2,11 @@
 import { and, desc, eq, like, lt } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import { animals } from "../../db/schema";
-import { Animal, AnimalCreate, AnimalListQuery, AnimalUpdate, AnimalUpdateInput } from "./schema";
+import { Animal, AnimalCreate, AnimalQuery, AnimalUpdate, AnimalUpdateInput } from "./schema";
 
 
 export interface IAnimalRepository {
-    getAll(query: AnimalListQuery): Promise<Animal[]>;
+    getAll(query: AnimalQuery): Promise<Animal[]>;
     findById(id: number): Promise<Animal | null>;
     create(input: AnimalCreate): Promise<Animal>;
     update(id: number, input: AnimalUpdateInput): Promise<Animal>;
@@ -22,7 +22,7 @@ export class AnimalRepository implements IAnimalRepository {
      }
     
 
-    async getAll(query: AnimalListQuery): Promise<Animal[]> {
+    async getAll(query: AnimalQuery): Promise<Animal[]> {
         const filters = [];
 
         if (query.cursor) {

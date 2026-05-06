@@ -62,9 +62,9 @@ export const animalUpdateInputSchema = animalSchema
   .strict();
 export type AnimalUpdateInput = z.infer<typeof animalUpdateInputSchema>;
 
-export const animalListQuerySchema = cursorQuerySchema.extend({
+export const animalQuerySchema = cursorQuerySchema.extend({
   name: z.string().trim().min(1).optional(),
   type: z.enum(["gato", "cachorro"]).optional(),
   gender: z.enum(["macho", "femea"]).optional(),
 });
-export type AnimalListQuery = z.infer<typeof animalListQuerySchema>;
+export type AnimalQuery = z.infer<typeof animalQuerySchema>;
