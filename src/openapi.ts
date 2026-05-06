@@ -3,7 +3,7 @@ import { z } from 'zod';
 import { registerAuthOpenApi } from './features/auth/routes';
 import { registerUsersOpenApi } from './features/user/routes';
 import { registerBannersOpenApi } from './features/banner/routes';
-import { registerAnimalsOpenApi } from './features/animals/routes';
+import { registerAnimalsOpenApi } from './features/animal/routes';
 import { registerEventsOpenApi } from './features/event/routes';
 
 // Extend Zod with OpenAPI
