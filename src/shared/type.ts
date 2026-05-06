@@ -2,6 +2,8 @@ import { z } from "zod"
 
 export type Env = {
   DB: D1Database;
+  IMAGES_BUCKET: R2Bucket;
+  R2_PUBLIC_URL: string;
   JWT_SECRET: string;
   ENVIRONMENT?: "development" | "production";
   CORS_ALLOWED_ORIGINS?: string; // Separado por vírgula em produção

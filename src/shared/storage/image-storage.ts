@@ -3,16 +3,27 @@ export interface IImageUploadRepository {
   delete(url: string): Promise<void>;
 }
 
-export class MockImageUploadRepository implements IImageUploadRepository {
+export class R2ImageUploadRepository implements IImageUploadRepository {
+  constructor(
+    private readonly bucket: R2Bucket,
+    private readonly publicUrl: string
+  ) {}
+
   async upload(buffer: ArrayBuffer, fileName: string, contentType: string): Promise<string> {
-    console.log(`Mock upload: received ${buffer.byteLength} bytes for ${fileName} (${contentType})`);
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    const randomId = Math.random().toString(36).substring(7);
-    return `https://mock-storage.com/images/${randomId}-${fileName}`;
+    const key = `${Date.now()}-${fileName}`;
+
+    await this.bucket.put(key, buffer, {
+      httpMetadata: {
+        contentType,
+      },
+    });
+
+    return `${this.publicUrl}/${key}`;
   }
 
   async delete(url: string): Promise<void> {
-    console.log(`Mock delete: removing image at ${url}`);
-    await new Promise((resolve) => setTimeout(resolve, 200));
+    const key = url.replace(`${this.publicUrl}/`, "");
+    await this.bucket.delete(key);
   }
 }
+
