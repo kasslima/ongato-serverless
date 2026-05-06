@@ -5,6 +5,7 @@ import { Env } from "./shared/type";
 import { bannersRoutes } from "./features/banner/routes";
 import { handleCorsPreFlight, addCorsHeaders } from "./shared/cors";
 import { animalsRoutes } from "./features/animals/routes";
+import { eventsRoutes } from "./features/event/routes";
 
 //import { petsRoutes } from "./features/pets/routes";
 
@@ -63,7 +64,7 @@ export async function router( req: Request, env: Env, ctx: ExecutionContext): Pr
   const routes: Record<string, RouteHandler> = {
     ...usersRoutes(env),
     ...authsRoutes(env),
-    //...eventsRoutes(env),
+    ...eventsRoutes(env),
     ...animalsRoutes(env),
     ...bannersRoutes(env),
     ...docsRoutes(),
