@@ -2,11 +2,11 @@
 import { and, desc, eq, like, lt } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import { banners } from "../../db/schema";
-import { Banner, BannerCreate, BannerListQuery, BannerUpdate, BannerUpdateInput } from "./schema";
+import { Banner, BannerCreate, BannerQuery, BannerUpdate, BannerUpdateInput } from "./schema";
 
 
 export interface IBannerRepository {
-    getAll(query: BannerListQuery): Promise<Banner[]>;
+    getAll(query: BannerQuery): Promise<Banner[]>;
     findById(id: number): Promise<Banner | null>;
     findByTitle(title: string): Promise<Banner | null>;
     create(input: BannerCreate): Promise<Banner>;
@@ -23,7 +23,7 @@ export class BannerRepository implements IBannerRepository {
      }
     
 
-    async getAll(query: BannerListQuery): Promise<Banner[]> {
+    async getAll(query: BannerQuery): Promise<Banner[]> {
         const filters = [];
 
         if (query.cursor) {

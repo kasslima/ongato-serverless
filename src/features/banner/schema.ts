@@ -47,7 +47,7 @@ export const bannerUpdateInputSchema = bannerSchema
   .strict();
 export type BannerUpdateInput = z.infer<typeof bannerUpdateInputSchema>;
 
-export const bannerListQuerySchema = cursorQuerySchema.extend({
+export const bannerQuerySchema = cursorQuerySchema.extend({
   title: z.string().trim().min(1).optional(),
 });
-export type BannerListQuery = z.infer<typeof bannerListQuerySchema>;
+export type BannerQuery = z.infer<typeof bannerQuerySchema>;

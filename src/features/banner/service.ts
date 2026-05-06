@@ -1,11 +1,11 @@
 import { IBannerRepository } from "./repository";
-import { Banner, BannerCreateInput, BannerListQuery, BannerUpdateInput } from "./schema";
+import { Banner, BannerCreateInput, BannerQuery, BannerUpdateInput } from "./schema";
 import { IImageUploadRepository } from "../../shared/storage/image-storage";
 import { MultipartFile } from "../../shared/type";
 
 
 export interface IBannerService {
-  getAll(query: BannerListQuery): Promise<Banner[]>;
+  getAll(query: BannerQuery): Promise<Banner[]>;
   getById(id: number): Promise<Banner | null>;
   create(input: BannerCreateInput, file?: MultipartFile): Promise<Banner>;
   update(id: number, input: BannerUpdateInput, file?: MultipartFile): Promise<Banner>;
@@ -18,7 +18,7 @@ export class BannerService implements IBannerService {
     private readonly imageRepo: IImageUploadRepository
   ) { }
 
-  async getAll(query: BannerListQuery): Promise<Banner[]> {
+  async getAll(query: BannerQuery): Promise<Banner[]> {
     return await this.repo.getAll(query);
   }
 

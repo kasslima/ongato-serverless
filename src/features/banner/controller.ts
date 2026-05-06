@@ -2,14 +2,14 @@ import { apiResponse, createdResponse, handleError, noContentResponse } from "..
 import { parseMultipartFormData, validateBody, validateMultipartImage, validateParams, validateQuery } from "../../shared/validation/validation";
 import { IBannerService } from "./service";
 import { idParamSchema } from "../../shared/validation/schema";
-import { bannerCreateInputSchema, bannerListQuerySchema, bannerUpdateInputSchema } from "./schema";
+import { bannerCreateInputSchema, bannerQuerySchema, bannerUpdateInputSchema } from "./schema";
 
 export class BannerController {
   constructor(private readonly service: IBannerService) { }
 
   async getAll(_req: Request): Promise<Response> {
     try {
-      const query = validateQuery(new URL(_req.url).searchParams, bannerListQuerySchema);
+      const query = validateQuery(new URL(_req.url).searchParams, bannerQuerySchema);
       if (!query.success) {
         return apiResponse(query.errors, "Validation failed");
       }
