@@ -9,7 +9,10 @@ export interface IAuthService {
 }
 
 export class AuthService implements IAuthService {
-  constructor(private readonly repo: IUserRepository) { }
+  constructor(
+    private readonly repo: IUserRepository,
+    private readonly jwtSecret: string,
+  ) { }
 
   async login(input: Auth): Promise<{ token: string }> {
 
@@ -27,7 +30,7 @@ export class AuthService implements IAuthService {
       role: user.role
     } satisfies Jwt;
 
-    const token = await generateToken(payload);
+    const token = await generateToken(payload, this.jwtSecret);
     return { token };
   }
 }

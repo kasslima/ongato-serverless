@@ -1,10 +1,11 @@
 import { Jwt } from "../../features/auth/schema";
 import { verifyToken } from "./jwt";
+import { Env } from "../type";
 
 type AuthenticatedHandler = (
   req: Request,
-  env: any,
-  ctx: any,
+  env: Env,
+  ctx: ExecutionContext,
   user: Jwt,
   params: Record<string, string>
 ) => Promise<Response> | Response;
@@ -13,8 +14,8 @@ export function withAuth(options?: { roles?: string[] }) {
   return (handler: AuthenticatedHandler) => {
     return async (
       req: Request,
-      env: any,
-      ctx: any,
+      env: Env,
+      ctx: ExecutionContext,
       params: Record<string, string>
     ) => {
       const authHeader = req.headers.get("Authorization");
@@ -26,7 +27,7 @@ export function withAuth(options?: { roles?: string[] }) {
       const token = authHeader.split(" ")[1];
 
       try {
-        const user = await verifyToken(token);
+        const user = await verifyToken(token, env.JWT_SECRET);
 
         if (options?.roles && !options.roles.includes(user.role)) {
           return new Response("Permission denied", { status: 403 });

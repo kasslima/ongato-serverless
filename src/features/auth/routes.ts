@@ -56,7 +56,7 @@ export function registerAuthOpenApi(registry: OpenAPIRegistry) {
 
 export function authsRoutes(env: Env) {
   const repo = new UserRepository(env.DB);
-  const service = new AuthService(repo);
+  const service = new AuthService(repo, env.JWT_SECRET);
   const controller = new AuthController(service);
 
   return {
