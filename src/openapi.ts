@@ -33,7 +33,7 @@ function bootstrapOpenApi() {
   isOpenApiBootstrapped = true;
 }
 
-export function generateOpenApiDocument() {
+export function generateOpenApiDocument(serverUrl: string) {
   bootstrapOpenApi();
   const generator = new OpenApiGeneratorV3(registry.definitions);
 
@@ -46,7 +46,7 @@ export function generateOpenApiDocument() {
     },
     servers: [
       {
-        url: 'http://localhost:8787',
+        url: serverUrl,
       },
     ],
   });

@@ -2,7 +2,10 @@ import { generateOpenApiDocument } from "../../openapi";
 
 export function docsRoutes() {
   return {
-    "GET /openapi.json": () => Response.json(generateOpenApiDocument()),
+    "GET /openapi.json": (req: Request) => {
+      const origin = new URL(req.url).origin;
+      return Response.json(generateOpenApiDocument(origin));
+    },
     "GET /docs": () => {
       const html = `<!DOCTYPE html>
 <html>
