@@ -7,8 +7,6 @@ import { handleCorsPreFlight, addCorsHeaders } from "./shared/cors";
 import { animalsRoutes } from "./features/animal/routes";
 import { eventsRoutes } from "./features/event/routes";
 
-//import { petsRoutes } from "./features/pets/routes";
-
 type RouteHandler = (
   req: Request,
   env: Env,
