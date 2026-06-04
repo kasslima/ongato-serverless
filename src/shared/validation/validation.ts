@@ -10,6 +10,7 @@ export interface MultipartFormDataResult {
 
 export const DEFAULT_ALLOWED_IMAGE_TYPES = [
   'image/jpeg',
+  'image/png',
   'image/svg+xml',
   'image/webp'
 ]
