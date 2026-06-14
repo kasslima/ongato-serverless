@@ -16,6 +16,7 @@ export const animalSchema = z.object({
   gender: z.enum(["macho", "femea"]),
   size: z.enum(["pequeno", "medio", "grande"]),
   type: z.enum(["gato", "cachorro"]),
+  featured: z.boolean(),
   description: z.string().nullable(),
   createdAt: z.string().nullable(),
   updatedAt: z.string().nullable()

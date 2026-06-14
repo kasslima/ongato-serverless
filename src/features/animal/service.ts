@@ -2,6 +2,9 @@ import { IAnimalRepository } from "./repository";
 import { Animal, AnimalCreateInput, AnimalQuery, AnimalUpdateInput } from "./schema";
 import { IImageUploadRepository } from "../../shared/storage/image-storage";
 import { MultipartFile } from "../../shared/type";
+import { BadRequestError } from "../../shared/errors/http-error";
+
+const MAX_FEATURED_ANIMALS = 4;
 
 
 export interface IAnimalService {
@@ -18,6 +21,17 @@ export class AnimalService implements IAnimalService {
     private readonly imageRepo: IImageUploadRepository
   ) { }
 
+  private async ensureFeaturedLimit(featured: boolean, excludeId?: number): Promise<void> {
+    if (!featured) {
+      return;
+    }
+
+    const featuredAnimals = await this.repo.countFeaturedAnimals(excludeId);
+    if (featuredAnimals >= MAX_FEATURED_ANIMALS) {
+      throw new BadRequestError(`Apenas ${MAX_FEATURED_ANIMALS} animais podem estar em destaque`);
+    }
+  }
+
   async getAll(query: AnimalQuery): Promise<Animal[]> {
     return await this.repo.getAll(query);
   }
@@ -30,6 +44,8 @@ export class AnimalService implements IAnimalService {
     if (!file) {
       throw new Error("Image file is required for animal creation");
     }
+
+    await this.ensureFeaturedLimit(input.featured);
 
     const imageUrl = await this.imageRepo.upload(file.imageBuffer, file.fileName, file.fileType);
 
@@ -46,6 +62,8 @@ export class AnimalService implements IAnimalService {
     if (!animal) {
       throw new Error("Animal not found");
     }
+
+    await this.ensureFeaturedLimit(input.featured ?? animal.featured, id);
 
     const updatePayload: Record<string, unknown> = {
       ...input

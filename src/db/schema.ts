@@ -18,6 +18,7 @@ export const animals = sqliteTable("animals", {
   gender : text("gender", { enum: ["macho", "femea"] }).notNull(),
   size: text("size", { enum: ["pequeno", "medio", "grande"] }).notNull(),
   type: text("type", { enum: ["gato", "cachorro"] }).notNull(),
+  featured: integer("featured", { mode: "boolean" }).notNull().default(false),
   description : text("description"),
   createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
   updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),

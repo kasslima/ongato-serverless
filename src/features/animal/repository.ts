@@ -1,5 +1,5 @@
 
-import { and, desc, eq, like, lt } from "drizzle-orm";
+import { and, count, desc, eq, like, lt, ne } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 import { animals } from "../../db/schema";
 import { Animal, AnimalCreate, AnimalQuery, AnimalUpdate, AnimalUpdateInput } from "./schema";
@@ -8,6 +8,7 @@ import { Animal, AnimalCreate, AnimalQuery, AnimalUpdate, AnimalUpdateInput } fr
 export interface IAnimalRepository {
     getAll(query: AnimalQuery): Promise<Animal[]>;
     findById(id: number): Promise<Animal | null>;
+    countFeaturedAnimals(excludeId?: number): Promise<number>;
     create(input: AnimalCreate): Promise<Animal>;
     update(id: number, input: AnimalUpdateInput): Promise<Animal>;
     delete(id: number): Promise<void>;
@@ -63,6 +64,23 @@ export class AnimalRepository implements IAnimalRepository {
         }
 
         return rows[0]
+    }
+
+    async countFeaturedAnimals(excludeId?: number): Promise<number> {
+        const filters = [
+            eq(animals.featured, true),
+        ];
+
+        if (excludeId !== undefined) {
+            filters.push(ne(animals.id, excludeId));
+        }
+
+        const rows = await this.orm
+            .select({ total: count() })
+            .from(animals)
+            .where(and(...filters));
+
+        return rows[0]?.total ?? 0;
     }
     
     async create(input: AnimalCreate): Promise<Animal> {
