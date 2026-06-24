@@ -48,7 +48,7 @@ This API is designed around feature modules and clean separation of responsibili
 ### Public Endpoints
 
 - `POST /auth/login`
-- `GET /animals`
+- `GET /animals` (filters: `name`, `age`, `gender`, `size`, `type`, `featured=0|1`; pagination: `cursor`, `limit`)
 - `GET /banners`
 - `GET /openapi.json`
 - `GET /docs`

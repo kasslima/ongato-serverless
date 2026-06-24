@@ -34,12 +34,24 @@ export class AnimalRepository implements IAnimalRepository {
             filters.push(like(animals.name, `%${query.name}%`));
         }
 
+        if (query.age) {
+            filters.push(eq(animals.age, query.age));
+        }
+
         if (query.type) {
             filters.push(eq(animals.type, query.type));
         }
 
         if (query.gender) {
             filters.push(eq(animals.gender, query.gender));
+        }
+
+        if (query.size) {
+            filters.push(eq(animals.size, query.size));
+        }
+
+        if (query.featured !== undefined) {
+            filters.push(eq(animals.featured, query.featured));
         }
 
         const rows = await this.orm

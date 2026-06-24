@@ -122,7 +122,19 @@ export type AnimalUpdateInput = z.infer<typeof animalUpdateInputSchema>;
 
 export const animalQuerySchema = cursorQuerySchema.extend({
   name: z.string().trim().min(1).optional(),
+  age: z.enum([
+    "0 a 6 meses",
+    "6 a 12 meses",
+    "1 a 2 anos",
+    "2 a 5 anos",
+    "5 a 9 anos",
+    "mais de 9 anos"
+  ]).optional(),
   type: z.enum(["gato", "cachorro"]).optional(),
   gender: z.enum(["macho", "femea"]).optional(),
+  size: z.enum(["pequeno", "medio", "grande"]).optional(),
+  featured: z.enum(["0", "1"])
+    .transform((value) => value === "1")
+    .optional(),
 });
 export type AnimalQuery = z.infer<typeof animalQuerySchema>;
