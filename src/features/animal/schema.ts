@@ -1,6 +1,58 @@
 import { z } from "zod";
 import { cursorQuerySchema } from "../../shared/validation/schema";
 
+const animalAttributesSchema = z
+  .string()
+  .trim()
+  .min(1, "Os atributos nao podem estar vazios")
+  .superRefine((value, ctx) => {
+    if (value.includes(",,")) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Os atributos nao podem conter duas virgulas seguidas",
+      });
+    }
+
+    if (value.startsWith(",") || value.endsWith(",")) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Os atributos nao podem comecar ou terminar com virgula",
+      });
+    }
+
+    const items = value.split(",").map((item) => item.trim());
+
+    if (items.some((item) => item.length === 0)) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Cada atributo precisa ter um texto valido entre as virgulas",
+      });
+    }
+
+    const duplicates = new Set<string>();
+    for (const item of items) {
+      const normalizedItem = item.toLocaleLowerCase();
+
+      if (item.length > 40) {
+        ctx.addIssue({
+          code: "custom",
+          message: "Cada atributo deve ter no maximo 40 caracteres",
+        });
+      }
+
+      if (duplicates.has(normalizedItem)) {
+        ctx.addIssue({
+          code: "custom",
+          message: "Os atributos nao podem estar duplicados",
+        });
+        break;
+      }
+
+      duplicates.add(normalizedItem);
+    }
+  })
+  .nullable();
+
 export const animalSchema = z.object({
   id: z.number(),
   name: z.string(),
@@ -17,6 +69,7 @@ export const animalSchema = z.object({
   size: z.enum(["pequeno", "medio", "grande"]),
   type: z.enum(["gato", "cachorro"]),
   featured: z.boolean(),
+  attributes: animalAttributesSchema,
   description: z.string().nullable(),
   createdAt: z.string().nullable(),
   updatedAt: z.string().nullable()
@@ -24,11 +77,15 @@ export const animalSchema = z.object({
 export type Animal = z.infer<typeof animalSchema>;
 
 
-export const animalCreateSchema = animalSchema.omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
+export const animalCreateSchema = animalSchema
+  .omit({
+    id: true,
+    createdAt: true,
+    updatedAt: true,
+  })
+  .extend({
+    attributes: animalAttributesSchema.optional(),
+  });
 export type AnimalCreate = z.infer<typeof animalCreateSchema>;
 
 export const animalCreateInputSchema = animalCreateSchema.omit({
