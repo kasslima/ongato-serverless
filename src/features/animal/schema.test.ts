@@ -1,5 +1,17 @@
 import { describe, expect, it } from "vitest";
-import { animalQuerySchema } from "./schema";
+import { animalCreateInputSchema, animalQuerySchema, animalUpdateInputSchema } from "./schema";
+
+const validAnimalCreateInput = {
+  name: "Mingau",
+  imageUrl: "https://example.com/mingau.webp",
+  age: "1 a 2 anos",
+  gender: "macho",
+  size: "pequeno",
+  type: "gato",
+  featured: false,
+  attributes: null,
+  description: "Gato tranquilo",
+};
 
 describe("animalQuerySchema", () => {
   it.each([
@@ -25,5 +37,45 @@ describe("animalQuerySchema", () => {
       age: "1 a 2 anos",
       size: "medio",
     });
+  });
+});
+
+describe("animalCreateInputSchema", () => {
+  it.each([
+    ["true", true],
+    ["false", false],
+    ["1", true],
+    ["0", false],
+  ])("converts multipart featured=%s to %s", (input, expected) => {
+    const result = animalCreateInputSchema.parse({
+      ...validAnimalCreateInput,
+      featured: input,
+    });
+
+    expect(result.featured).toBe(expected);
+  });
+
+  it("accepts boolean featured from JSON bodies", () => {
+    const result = animalCreateInputSchema.parse({
+      ...validAnimalCreateInput,
+      featured: true,
+    });
+
+    expect(result.featured).toBe(true);
+  });
+
+  it("rejects invalid featured strings", () => {
+    expect(() => animalCreateInputSchema.parse({
+      ...validAnimalCreateInput,
+      featured: "yes",
+    })).toThrow();
+  });
+});
+
+describe("animalUpdateInputSchema", () => {
+  it("converts multipart featured strings", () => {
+    const result = animalUpdateInputSchema.parse({ featured: "false" });
+
+    expect(result.featured).toBe(false);
   });
 });

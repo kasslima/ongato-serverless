@@ -53,6 +53,24 @@ const animalAttributesSchema = z
   })
   .nullable();
 
+const formBooleanSchema = z.preprocess((value) => {
+  if (typeof value !== "string") {
+    return value;
+  }
+
+  const normalizedValue = value.trim().toLowerCase();
+
+  if (normalizedValue === "true" || normalizedValue === "1") {
+    return true;
+  }
+
+  if (normalizedValue === "false" || normalizedValue === "0") {
+    return false;
+  }
+
+  return value;
+}, z.boolean());
+
 export const animalSchema = z.object({
   id: z.number(),
   name: z.string(),
@@ -90,6 +108,8 @@ export type AnimalCreate = z.infer<typeof animalCreateSchema>;
 
 export const animalCreateInputSchema = animalCreateSchema.omit({
   imageUrl: true
+}).extend({
+  featured: formBooleanSchema,
 });
 export type AnimalCreateInput = z.infer<typeof animalCreateInputSchema>;
 
@@ -112,6 +132,9 @@ export const animalUpdateInputSchema = animalSchema
     createdAt: true,
     updatedAt: true,
     imageUrl: true
+  })
+  .extend({
+    featured: formBooleanSchema,
   })
   .partial()
   .refine(data => Object.keys(data).length > 0, {
