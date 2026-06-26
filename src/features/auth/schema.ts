@@ -2,8 +2,8 @@ import { z } from "zod";
 import { userSchema } from "../user/schema";
 
 export const authSchema = z.object({
-    email: z.string().email(),
-    password: z.string().min(6),
+    email: userSchema.shape.email,
+    password: z.string().min(6).trim(),
 
 });
 export type Auth = z.infer<typeof authSchema>;

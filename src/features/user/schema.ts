@@ -4,8 +4,8 @@ import { cursorQuerySchema } from "../../shared/validation/schema";
 export const userSchema = z.object({
     id: z.number(),
     name: z.string(),
-    email: z.string().email(),
-    password: z.string().min(6),
+    email: z.string().trim().toLowerCase().email(),
+    password: z.string().min(6).trim(),
     role: z.enum(["admin", "dev"]).default("dev"),
     createdAt: z.string().nullable()
 });
