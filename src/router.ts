@@ -6,6 +6,7 @@ import { bannersRoutes } from "./features/banner/routes";
 import { handleCorsPreFlight, addCorsHeaders } from "./shared/cors";
 import { animalsRoutes } from "./features/animal/routes";
 import { eventsRoutes } from "./features/event/routes";
+import { donationsRoutes } from "./features/donation/routes";
 
 type RouteHandler = (
   req: Request,
@@ -65,6 +66,7 @@ export async function router( req: Request, env: Env, ctx: ExecutionContext): Pr
     ...eventsRoutes(env),
     ...animalsRoutes(env),
     ...bannersRoutes(env),
+    ...donationsRoutes(env),
     ...docsRoutes(),
 
   };

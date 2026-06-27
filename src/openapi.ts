@@ -5,6 +5,7 @@ import { registerUsersOpenApi } from './features/user/routes';
 import { registerBannersOpenApi } from './features/banner/routes';
 import { registerAnimalsOpenApi } from './features/animal/routes';
 import { registerEventsOpenApi } from './features/event/routes';
+import { registerDonationsOpenApi } from './features/donation/routes';
 
 // Extend Zod with OpenAPI
 extendZodWithOpenApi(z);
@@ -30,6 +31,7 @@ function bootstrapOpenApi() {
   registerEventsOpenApi(registry);
   registerAnimalsOpenApi(registry);
   registerBannersOpenApi(registry);
+  registerDonationsOpenApi(registry);
   isOpenApiBootstrapped = true;
 }
 

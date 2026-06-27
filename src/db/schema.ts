@@ -41,3 +41,14 @@ export const events = sqliteTable("events", {
   createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });
 
+export const donations = sqliteTable("donations", {
+  id: integer("id").primaryKey(),
+  amount: integer("amount").notNull(),
+  status: text("status", { enum: ["pending", "paid"] }).notNull(),
+  stripeSessionId: text("stripe_session_id"),
+  donorEmail: text("donor_email"),
+  paidAt: text("paid_at"),
+  createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+  updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
+});
+
