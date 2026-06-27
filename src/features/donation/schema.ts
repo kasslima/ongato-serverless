@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const donationStatusSchema = z.enum(["pending", "paid"]);
+export const donationStatusSchema = z.enum(["pending", "paid", "expired", "failed"]);
 export const MIN_DONATION_AMOUNT_IN_CENTS = 1000;
 
 export const donationSchema = z.object({
@@ -10,6 +10,7 @@ export const donationSchema = z.object({
   stripeSessionId: z.string().nullable(),
   donorEmail: z.string().nullable(),
   paidAt: z.string().nullable(),
+  thankYouEmailQueuedAt: z.string().nullable(),
   createdAt: z.string(),
   updatedAt: z.string(),
 });
@@ -18,6 +19,7 @@ export type Donation = z.infer<typeof donationSchema>;
 export const donationCreateSchema = donationSchema.omit({
   id: true,
   stripeSessionId: true,
+  thankYouEmailQueuedAt: true,
   createdAt: true,
   updatedAt: true,
 });

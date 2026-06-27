@@ -35,6 +35,7 @@ export class StripeCheckoutClient implements IStripeCheckoutClient {
       "line_items[0][price_data][unit_amount]": String(input.amount),
       "line_items[0][price_data][product_data][name]": "Doação para ONG",
       "metadata[donationId]": String(input.donationId),
+      "payment_intent_data[metadata][donationId]": String(input.donationId),
     });
 
     const response = await fetch(`${this.baseUrl}/checkout/sessions`, {

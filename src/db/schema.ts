@@ -44,10 +44,11 @@ export const events = sqliteTable("events", {
 export const donations = sqliteTable("donations", {
   id: integer("id").primaryKey(),
   amount: integer("amount").notNull(),
-  status: text("status", { enum: ["pending", "paid"] }).notNull(),
+  status: text("status", { enum: ["pending", "paid", "expired", "failed"] }).notNull(),
   stripeSessionId: text("stripe_session_id"),
   donorEmail: text("donor_email"),
   paidAt: text("paid_at"),
+  thankYouEmailQueuedAt: text("thank_you_email_queued_at"),
   createdAt: text("created_at").notNull().default(sql`CURRENT_TIMESTAMP`),
   updatedAt: text("updated_at").notNull().default(sql`CURRENT_TIMESTAMP`),
 });
