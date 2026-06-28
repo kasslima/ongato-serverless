@@ -1,10 +1,10 @@
 import { router } from "./router";
 import { Env } from "./shared/type";
 import {
+  checkRateLimit,
   createTooManyRequestsResponse,
   getClientIp,
   isLoginRequest,
-  isRateLimited,
 } from "./shared/rate-limit";
 
 
@@ -13,15 +13,33 @@ export default {
     const { method } = request;
     const pathname = new URL(request.url).pathname;
     const clientIp = getClientIp(request);
+    const globalKey = `global:${clientIp}`;
 
-    const isGlobalBlocked = await isRateLimited(env.GLOBAL_RATE_LIMITER, `global:${clientIp}`);
-    if (isGlobalBlocked) {
+    const globalResult = await checkRateLimit(env.GLOBAL_RATE_LIMITER, globalKey);
+    console.log("rate_limit_global", {
+      method,
+      pathname,
+      clientIp,
+      key: globalKey,
+      success: globalResult.success,
+    });
+
+    if (!globalResult.success) {
       return createTooManyRequestsResponse();
     }
 
     if (isLoginRequest(method, pathname)) {
-      const isLoginBlocked = await isRateLimited(env.LOGIN_RATE_LIMITER, `login:${clientIp}`);
-      if (isLoginBlocked) {
+      const loginKey = `login:${clientIp}`;
+      const loginResult = await checkRateLimit(env.LOGIN_RATE_LIMITER, loginKey);
+      console.log("rate_limit_login", {
+        method,
+        pathname,
+        clientIp,
+        key: loginKey,
+        success: loginResult.success,
+      });
+
+      if (!loginResult.success) {
         return createTooManyRequestsResponse();
       }
     }
