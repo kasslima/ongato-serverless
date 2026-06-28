@@ -40,7 +40,7 @@
 			"name": "GLOBAL_RATE_LIMITER",
 			"namespace_id": "1001",
 			"simple": {
-				"limit": 100,
+				"limit": 40,
 				"period": 60
 			}
 		},
