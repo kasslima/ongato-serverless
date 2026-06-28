@@ -3,6 +3,8 @@ import { z } from "zod"
 export type Env = {
   DB: D1Database;
   IMAGES_BUCKET: R2Bucket;
+  GLOBAL_RATE_LIMITER: RateLimit;
+  LOGIN_RATE_LIMITER: RateLimit;
   R2_PUBLIC_URL: string;
   JWT_SECRET: string;
   STRIPE_SECRET_KEY: string;
